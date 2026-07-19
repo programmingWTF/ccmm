@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+coverage/
+
+# Logs & env
+*.log
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local Claude Code state (personal settings — not for the repo)
+.claude/settings.local.json
