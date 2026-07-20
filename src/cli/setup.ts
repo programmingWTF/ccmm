@@ -280,9 +280,7 @@ async function syncSettings(c: ReturnType<typeof loadConfig>): Promise<void> {
   }
 
   settings.env = newEnv;
-  if (!settings.statusLine) {
-    settings.statusLine = { type: "command" as const, command: "ccmm statusline" };
-  }
+  settings.statusLine = { type: "command" as const, command: "ccmm statusline" };
 
   mkdirSync(dirname(sp), { recursive: true });
   writeFileSync(sp, JSON.stringify(settings, null, 2) + "\n", "utf-8");
