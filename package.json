@@ -1,5 +1,8 @@
 {
-  "name": "ccmm",
+  "name": "@pgwtf/ccmm",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.1.0",
   "description": "Claude Code Model Manager — switch models mid-session, route to any provider, watch live usage & cost",
   "type": "module",

@@ -49,7 +49,7 @@ ccmm 把这个权力还给你：你定义一个**方案** — 一组命名的五
 ## 安装
 
 ```bash
-npm install -g ccmm
+npm install -g @pgwtf/ccmm
 ccmm init          # 将 Claude Code 指向代理 + 注册状态栏
 ```
 

@@ -49,7 +49,7 @@ Beyond switching:
 ## Install
 
 ```bash
-npm install -g ccmm
+npm install -g @pgwtf/ccmm
 ccmm init          # points Claude Code at the proxy + registers the status line
 ```
 
