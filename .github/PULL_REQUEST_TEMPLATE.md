@@ -1,14 +1,20 @@
+## Title
+
+<!-- Follow Conventional Commits: <type>(<scope>): <description> -->
+<!-- Examples: feat(proxy): add request timeout · fix(cli): setup crash on Windows · docs: update README -->
+`<type>(<scope>):`
+
 ## Description
 
-<!-- What does this PR do? -->
+<!-- What does this PR do? Why? -->
 
-## Type of change
+## Type
 
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Refactor / code improvement
-- [ ] Documentation
-- [ ] Other
+- [ ] `feat` — new feature
+- [ ] `fix` — bug fix
+- [ ] `refactor` — code improvement, no behavior change
+- [ ] `docs` — documentation only
+- [ ] `chore` — build, deps, CI, etc.
 
 ## Checklist
 
@@ -18,6 +24,6 @@
 - [ ] UI text in `src/i18n/index.ts` (zh-CN + en)
 - [ ] No secrets committed
 
-## Related issues
+## Related
 
-<!-- Fixes #123 -->
+<!-- Fixes #123 · Closes #456 -->

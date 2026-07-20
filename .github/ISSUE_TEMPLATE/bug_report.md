@@ -4,13 +4,21 @@ about: Report a bug in ccmm
 labels: bug
 ---
 
-## Description
+## Summary
+
+<!-- One sentence: what broke? -->
 
 ## Steps to reproduce
 
 1.
 2.
 3.
+
+## Expected vs actual
+
+| Expected | Actual |
+|----------|--------|
+|          |        |
 
 ## Environment
 
