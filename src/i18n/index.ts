@@ -137,6 +137,22 @@ const ZH: Record<string, string> = {
   "stats.title": "ccmm 统计 — ", "stats.requests": "请求数:",
   "stats.tokensIn": "输入 tokens:", "stats.tokensOut": "输出 tokens:",
   "stats.cost": "费用:", "stats.byModel": "\n按模型:",
+
+  "config.sync": "同步设置 (Sync)",
+  "config.desc.sync": "重新写入 Claude Code settings.json（状态栏+代理URL）",
+  "sync.title": "同步设置到 Claude Code",
+  "sync.checking": "检测 Claude Code 设置...",
+  "sync.found": "当前 statusLine 命令:",
+  "sync.ours": "ccmm statusline",
+  "sync.other": "其他工具（将覆盖）",
+  "sync.overwrite": "写入 ccmm 状态栏配置",
+  "synced": "✓ 设置已同步到 Claude Code",
+  "sync.nosettings": "未找到 Claude Code settings.json。",
+
+  "setup.overwriteTitle": "检测到已有状态栏配置",
+  "setup.overwriteMsg": "当前 statusLine 命令不是 ccmm，是否覆盖？",
+  "setup.overwriteYes": "覆盖 — 使用 ccmm 状态栏",
+  "setup.overwriteNo": "保留 — 不做更改",
 };
 
 const EN: Record<string, string> = {
@@ -221,22 +237,6 @@ const EN: Record<string, string> = {
   "as.enable": "Enable — auto-start proxy on login",
   "as.disable": "Disable — cancel auto-start",
   "as.enabled": "✓ Auto-start enabled", "as.disabled2": "✓ Auto-start disabled",
-
-  "config.sync": "同步设置 (Sync)",
-  "config.desc.sync": "重新写入 Claude Code settings.json（状态栏+代理URL）",
-  "sync.title": "同步设置到 Claude Code",
-  "sync.checking": "检测 Claude Code 设置...",
-  "sync.found": "当前 statusLine 命令:",
-  "sync.ours": "ccmm statusline",
-  "sync.other": "其他工具（将覆盖）",
-  "sync.overwrite": "写入 ccmm 状态栏配置",
-  "synced": "✓ 设置已同步到 Claude Code",
-  "sync.nosettings": "未找到 Claude Code settings.json。",
-
-  "setup.overwriteTitle": "检测到已有状态栏配置",
-  "setup.overwriteMsg": "当前 statusLine 命令不是 ccmm，是否覆盖？",
-  "setup.overwriteYes": "覆盖 — 使用 ccmm 状态栏",
-  "setup.overwriteNo": "保留 — 不做更改",
 
   "setup.title": "ccmm Setup Wizard",
   "setup.subtitle": "Configure providers and model mappings",
