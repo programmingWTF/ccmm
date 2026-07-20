@@ -1,0 +1,50 @@
+{
+  "name": "ccmm",
+  "version": "0.1.0",
+  "description": "Claude Code Model Manager — switch models mid-session, route to any provider, watch live usage & cost",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "ccmm": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "claude-code",
+    "model-manager",
+    "proxy",
+    "llm",
+    "anthropic",
+    "cli"
+  ],
+  "license": "MIT",
+  "author": "programmingWTF",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/programmingWTF/ccmm"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^8.5.2",
+    "commander": "^13.1.0",
+    "picocolors": "^1.1.1",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.1.1"
+  }
+}

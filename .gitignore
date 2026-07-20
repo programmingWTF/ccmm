@@ -14,5 +14,11 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Temp / debug files
+_write_server.js
+
 # Local Claude Code state (personal settings — not for the repo)
 .claude/settings.local.json
+.claude/plans/
+.claude/worktrees/
+.claude/scheduled_tasks.json

@@ -2,6 +2,8 @@
 
 > Switch models **mid-session** in Claude Code, watch **usage / cache-hit / real cost** live in the status line, and **route requests to any provider** — all from one tiny CLI.
 
+[简体中文](./README.zh.md)
+
 ```
 ┌──────────────┐   ANTHROPIC_BASE_URL    ┌──────────────┐        ┌─────────────────────┐
 │  Claude Code │ ───────────────────────▶│  ccmm proxy  │───────▶│ Anthropic / relay / │
@@ -11,32 +13,32 @@
         └──────────── reads live metrics ───────┘  ~/.ccmm/ (config · route · metrics)
 ```
 
-> ⚠️ **Status: early design / pre-release.** The architecture below is settled; v1 code is on the way. Command names and config keys may still shift slightly before `0.1.0`.
-
 ---
 
 ## Why ccmm?
 
-Claude Code ships with a few gaps for people who care about **which model** they run and **what it costs**:
+Claude Code has gaps for people who care about **which model** they run and **what it costs**:
 
-- Switching models means the built-in `/model` command (breaks your flow) or editing settings and restarting.
-- There's no at-a-glance view of **cache-hit rate**, **token usage**, or **spend**.
-- If you use a **relay / proxy API** with your own pricing, Claude's built-in cost number is wrong — it always assumes Anthropic list prices for the model name *it* sent.
+- Switching models requires `/model` (breaks flow) or editing settings and restarting.
+- No at-a-glance view of **cache-hit rate**, **token usage**, or **spend**.
+- If you use a **relay / proxy API**, Claude's built-in cost is wrong — it uses Anthropic list prices for the model name *it* sent.
 
-ccmm closes all three with a single lightweight **localhost proxy** that sits between Claude Code and your provider. Because every request flows through it, the proxy is one choke point that handles **routing** *and* **metering** at the same time.
+ccmm closes all three with a single **localhost proxy** that sits between Claude Code and your provider — one choke point for **routing** AND **metering**.
 
 ## Features
 
 | | |
 |---|---|
-| 🔀 **Live model switching** | `!ccmm use opus` inside Claude Code → takes effect on the *next message*. No restart, no patching. |
-| 📊 **Real-time status line** | Active model · thinking tier · tokens in/out · cache-hit % · session & today cost · budget remaining. |
-| 🌐 **Any provider** | Route different models to Anthropic, relays/proxies (`ANTHROPIC_BASE_URL`-style), OpenAI-compatible endpoints, or local servers. |
-| 💵 **Your prices, your cost** | Per-model price tables (input / output / cache-write / cache-read) so cost is accurate even behind a relay. |
-| 🗂 **Profiles** | Named presets like `fast`, `smart`, `code` — one word to switch a whole model+provider combo. |
-| 🚦 **Budgets & alerts** | Daily/session spend caps; status line turns red as you approach the limit. |
-| 🧩 **Claude Code plugin** | Auto-registers the status line and a `/ccmm` command on install. |
-| 🧪 **Native picker (experimental)** | Opt-in patch that adds models to Claude Code's own `/model` menu / a hotkey (see [Experimental](#experimental-native-in-ui-picker)). |
+| 🔀 **Live switching** | `!ccmm use deepseek` inside Claude Code — next message uses the new provider, no restart. |
+| 📊 **Real-time status line** | Active model · tokens in/out · cache-hit % · today cost · budget remaining. |
+| 🌐 **Any provider** | Anthropic, DeepSeek, OpenRouter, Vercel AI, Moonshot, or any Anthropic-compatible endpoint. |
+| 🗂 **Named 方案 (provider plans)** | One `ccmm use <name>` switches an entire 5-slot model mapping at once. |
+| 💵 **Your prices** | Per-model price tables so cost is accurate even behind a relay. |
+| 🚦 **Budgets & alerts** | Daily spend caps visible in the status line. |
+| 🎛 **Interactive config** | `ccmm config` — menu-driven editor for all settings. |
+| 🌍 **Bilingual** | 中文 / English — choose on `ccmm setup`, switch anytime in `ccmm config`. |
+| 🚀 **Auto-start** | Optional: auto-launch the proxy daemon on system login. |
+| 🧩 **Plugin** | Auto-registers status line and MCP tools on install. |
 
 ## Install
 
@@ -45,118 +47,99 @@ npm install -g ccmm
 ccmm init          # points Claude Code at the proxy + registers the status line
 ```
 
-`ccmm init` is idempotent and backs up any file it touches. It:
-
-1. writes a default `~/.ccmm/config.json`,
-2. sets `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` for Claude Code (via its settings `env`),
-3. registers the `ccmm statusline` command in Claude Code's `statusLine` setting,
-4. starts the proxy.
+`ccmm init` is idempotent and backs up every file it touches.
 
 ## Quickstart
 
 ```bash
-ccmm init                 # one-time setup
-ccmm price set claude-opus-4-1 --input 15 --output 75 --cache-read 1.5 --cache-write 18.75
-ccmm profile add smart --model claude-opus-4-1 --provider anthropic
-ccmm profile add fast  --model claude-haiku-3-5 --provider anthropic
-ccmm use smart            # switch (also works live as `!ccmm use smart` inside Claude)
+ccmm setup                # interactive wizard: choose language → add providers → 5-slot model map
+ccmm use deepseek         # switch to DeepSeek (`!ccmm use deepseek` inside Claude)
+ccmm config               # interactive config editor
 ccmm stats today          # what did I spend?
 ```
 
-Inside Claude Code, switching is just a bang-command in the prompt box:
-
-```
-!ccmm use fast
-```
-
-The proxy hot-reloads; the very next message runs on the new model.
-
 ## Commands
 
-| Command | What it does |
+| Command | |
 |---|---|
-| `ccmm init` | Set up config, point Claude Code at the proxy, register status line |
-| `ccmm start` / `ccmm stop` | Manage the proxy daemon |
-| `ccmm use <profile\|model>` | Switch the active route (live, hot-reloaded) |
-| `ccmm current` | Show the active model / provider / profile |
-| `ccmm models` | List configured models, profiles, and providers |
-| `ccmm profile add\|edit\|rm` | Manage profiles |
-| `ccmm provider add\|edit\|rm` | Manage providers (base URL + auth) |
-| `ccmm price set <model> …` | Set per-model unit prices |
-| `ccmm stats [today\|week\|session\|project]` | Usage & cost report |
-| `ccmm statusline` | (internal) renders the Claude Code status line |
-| `ccmm doctor` | Diagnose: proxy up? base URL set? auth present? |
-| `ccmm mod install\|remove\|status` | **Experimental** native in-UI picker |
+| `ccmm setup` | Interactive wizard — add providers, 5-slot model mapping, budget, auto-start |
+| `ccmm config` | Interactive editor — browse/modify all settings |
+| `ccmm start` / `stop` / `logs` | Proxy daemon lifecycle |
+| `ccmm use <name>` | Switch active provider/方案 (live, hot-reloaded) |
+| `ccmm current` | Show active provider and model |
+| `ccmm models` | List all providers and priced models |
+| `ccmm provider add\|rm\|list` | Manage providers via CLI |
+| `ccmm price set\|rm\|list` | Manage per-model prices |
+| `ccmm stats [today\|session\|week\|all]` | Usage & cost report |
+| `ccmm statusline` | (internal) renders the status line |
+| `ccmm doctor` | Diagnose setup |
+| `ccmm init` | Initialize and register with Claude Code |
 
 ## Configuration
 
-Everything lives in `~/.ccmm/config.json` (runtime route + metrics are stored alongside it). Example:
+`~/.ccmm/config.json`:
 
 ```jsonc
 {
   "proxy":   { "host": "127.0.0.1", "port": 8787 },
-  "defaultProfile": "smart",
-  "profiles": {
-    "fast":  { "model": "claude-haiku-3-5", "provider": "anthropic" },
-    "smart": { "model": "claude-opus-4-1",  "provider": "anthropic" },
-    "code":  { "model": "gpt-oss-120b",     "provider": "local" }
-  },
+  "defaultProvider": "deepseek",
+  "language": "zh-CN",
   "providers": {
-    "anthropic": { "baseUrl": "https://api.anthropic.com", "apiKeyEnv": "ANTHROPIC_API_KEY" },
-    "relay":     { "baseUrl": "https://my-relay.example.com", "apiKeyEnv": "RELAY_KEY" },
-    "local":     { "baseUrl": "http://127.0.0.1:1234/v1", "apiKeyEnv": "" }
+    "deepseek": {
+      "baseUrl": "https://api.deepseek.com/anthropic",
+      "apiKeyEnv": "DEEPSEEK_API_KEY",
+      "wire": "anthropic",
+      "modelMap": {
+        "ANTHROPIC_MODEL": "deepseek-v4-pro",
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-flash",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
+        "CLAUDE_CODE_SUBAGENT_MODEL": "deepseek-v4-flash"
+      }
+    }
   },
   "prices": {
-    "claude-opus-4-1": { "input": 15, "output": 75, "cacheWrite": 18.75, "cacheRead": 1.5 }
+    "deepseek-v4-pro": { "input": 2.0, "output": 8.0, "cacheRead": 0.2, "cacheWrite": 3.0 }
   },
   "budget": { "dailyUsd": 20, "alert": true }
 }
 ```
 
-Prices are **USD per 1M tokens** by default. Because ccmm meters the *actual* model it forwarded to (not the name Claude Code thinks it sent), cost stays correct even when a relay remaps models.
+- **Provider/方案** — a named config (endpoint + API key + 5-slot `modelMap`). One `ccmm use <name>` switches the entire plan.
+- **`modelMap`** — maps Claude Code's 5 thinking-depth placeholders to real upstream model IDs.
+- **Prices** — USD per 1M tokens. Cost is computed from the *forwarded* model, not the requested one.
+- **`language`** — `"zh-CN"` or `"en"`.
+
+## How it works
+
+1. `ccmm init` sets `ANTHROPIC_BASE_URL=http://127.0.0.1:8787`.
+2. All Claude Code API requests go through the ccmm proxy.
+3. The proxy checks the active provider's `modelMap` → rewrites `body.model` → forwards.
+4. Response streams back transparently; `usage` is captured from SSE events for metering.
+5. **Prompt caching is preserved** — only `body.model` and auth headers are touched.
 
 ## Status line
 
-The status line reads live proxy metrics and renders one line, e.g.:
-
 ```
-🧠 opus-4.1 · think:high · ▲12.4k ▼3.1k · cache 87% · $0.42 today · $19.58 left
+🧠 deepseek-v4-pro · ▲12.4k ▼3.1k · cache 87% · $0.42 today · $19.58 left
 ```
 
-Thinking tier, cache-hit %, and cost all come from the proxy's per-request `usage` records — the same fields Claude Code writes to its transcripts (`input_tokens`, `output_tokens`, `cache_read_input_tokens`, `cache_creation_input_tokens`), captured at the source.
-
-## Experimental: native in-UI picker
-
-The proxy + `!cccm use` covers ~90% of "switch models in the UI" with **zero** modification to Claude Code. For the last 10% — a real hotkey or models listed inside Claude Code's own `/model` menu — ccmm ships an **opt-in** patcher inspired by [tweakcc](https://github.com/Piebald-AI/tweakcc):
-
-```bash
-ccmm mod install    # patches the installed @anthropic-ai/claude-code bundle
-```
-
-> ⚠️ **Read before using.** This modifies a third-party, minified, frequently-updated bundle. It can break on any Claude Code release, is pinned to known-good versions, makes a backup before patching, and is **entirely at your own risk**. It may also fall outside Anthropic's terms of service. The rest of ccmm works perfectly without it.
+Auto-degrades to parsing Claude Code's transcript JSONL when the proxy isn't running.
 
 ## Roadmap
 
-- **v0.1** — proxy core, CLI, profiles, providers, prices, status line, `stats`, plugin packaging
-- **v0.2** — budgets/alerts in the status line, `doctor`, per-project model rules (`.ccmm.json`)
-- **v0.3** — experimental `mod` (native picker/hotkey), usage history export (CSV/JSON)
-- **later** — interactive TUI dashboard, model recommendations, Bedrock/Vertex providers
+Interactive TUI dashboard, model recommendations, Bedrock/Vertex providers, OpenAI-compatible wire translation.
 
-## Prior art & credits
+## Credits
 
-ccmm stands on ideas proven by others — thank you:
-
-- [tweakcc](https://github.com/Piebald-AI/tweakcc) — patching `cli.js` for custom models/themes (inspiration for the experimental mod)
-- [claude-code-router](https://github.com/musistudio/claude-code-router) & [LiteLLM](https://github.com/BerriAI/litellm) — `ANTHROPIC_BASE_URL` routing proxies
+- [tweakcc](https://github.com/Piebald-AI/tweakcc) · [claude-code-router](https://github.com/musistudio/claude-code-router) · [LiteLLM](https://github.com/BerriAI/litellm)
 - [How I built a hot-swappable backend proxy for Claude Code](https://hackernoon.com/how-i-built-a-hot-swappable-backend-proxy-for-claude-code)
 - Anthropic's [LLM gateway docs](https://code.claude.com/docs/en/llm-gateway-connect)
 
-ccmm's angle is bundling routing + metering + pricing + profiles + status line into **one** install-and-go tool.
-
 ## Disclaimer
 
-ccmm is an independent, unofficial project — **not affiliated with or endorsed by Anthropic**. The experimental `mod` modifies third-party software; use it at your own risk and only where your terms of service allow it. API keys you configure are stored locally in `~/.ccmm/` and sent only to the providers you specify.
+ccmm is an independent project — **not affiliated with Anthropic**. API keys are stored locally in `~/.ccmm/` and sent only to the providers you specify.
 
 ## License
 
-MIT (see [LICENSE](./LICENSE)).
+MIT ([LICENSE](./LICENSE)).
