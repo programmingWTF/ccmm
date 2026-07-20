@@ -23,11 +23,13 @@ Claude Code picks models automatically based on thinking depth, but it doesn't l
 
 ccmm flips that: you define a **方案 (plan)** — a named set of five model slots mapping each thinking depth (auto / high / medium / low / subagent) to whatever model you want, on whatever provider you trust. Then one command swaps the entire plan. Live. Mid-session. No restart.
 
+> **v1 is Anthropic Messages API only.** Your provider must speak the Anthropic wire protocol. OpenAI-compatible translation is on the roadmap.
+
 Beyond switching:
 
 - **Your cost, not Anthropic's** — if you route through a different provider, Claude's built-in cost number is wrong. ccmm meters at the proxy on the *actual* forwarded model with your own price table.
 - **Cache-hit visibility** — ccmm tracks `cache_read_input_tokens` and `cache_creation_input_tokens` from SSE events and shows the real cache-hit percentage in the status line. You can see whether your provider is giving you the caching you're paying for.
-- **No workflow interruption** — `!ccmm use my-plan` in the Claude Code prompt box. Hot-reloaded. Instant.
+- **No workflow interruption** — `!ccmm use my-model` in the Claude Code prompt box. Hot-reloaded. Instant.
 
 ## Features
 
