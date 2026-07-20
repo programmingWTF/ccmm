@@ -1,6 +1,8 @@
 # ccmm — Claude Code Model Manager
 
-> Switch models **mid-session** in Claude Code, watch **usage / cache-hit / real cost** live in the status line, and **route requests to any provider** — all from one tiny CLI.
+> **The fastest way to switch Claude Code's model.** Define your own model plans — map each thinking depth (auto / high / medium / low / subagent) to whatever model you want, across any provider. Then `!ccmm use deepseek` switches all 5 slots at once. Live, mid-session, no restart.
+>
+> Bonus: real-time cost metering, cache-hit tracking, budget alerts — all in the status line.
 
 < [English](./README.md) | [简体中文](./README.zh.md) >
 
