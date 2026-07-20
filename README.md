@@ -2,7 +2,7 @@
 
 > Switch models **mid-session** in Claude Code, watch **usage / cache-hit / real cost** live in the status line, and **route requests to any provider** — all from one tiny CLI.
 
-[简体中文](./README.zh.md)
+< [English](./README.md) | [简体中文](./README.zh.md) >
 
 ```
 ┌──────────────┐   ANTHROPIC_BASE_URL    ┌──────────────┐        ┌─────────────────────┐
@@ -32,7 +32,7 @@ ccmm closes all three with a single **localhost proxy** that sits between Claude
 | 🔀 **Live switching** | `!ccmm use deepseek` inside Claude Code — next message uses the new provider, no restart. |
 | 📊 **Real-time status line** | Active model · tokens in/out · cache-hit % · today cost · budget remaining. |
 | 🌐 **Any provider** | Anthropic, DeepSeek, OpenRouter, Vercel AI, Moonshot, or any Anthropic-compatible endpoint. |
-| 🗂 **Named 方案 (provider plans)** | One `ccmm use <name>` switches an entire 5-slot model mapping at once. |
+| 🗂 **Named provider plans** | One `ccmm use <name>` switches an entire 5-slot model mapping at once. |
 | 💵 **Your prices** | Per-model price tables so cost is accurate even behind a relay. |
 | 🚦 **Budgets & alerts** | Daily spend caps visible in the status line. |
 | 🎛 **Interactive config** | `ccmm config` — menu-driven editor for all settings. |
