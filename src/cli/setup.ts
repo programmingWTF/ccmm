@@ -280,7 +280,28 @@ async function syncSettings(c: ReturnType<typeof loadConfig>): Promise<void> {
   }
 
   settings.env = newEnv;
-  settings.statusLine = { type: "command" as const, command: "ccmm statusline" };
+
+  // Check existing statusLine — ask if it's not ours
+  const currentSL = (settings.statusLine as { command?: string })?.command;
+  const isOurs = currentSL === "ccmm statusline";
+  let shouldSetSL = true;
+
+  if (currentSL && !isOurs) {
+    console.log("");
+    console.log(pc.yellow(zh ? "  检测到已有状态栏配置:" : "  Existing statusLine detected:") + " " + pc.bold(currentSL));
+    const action = await select({
+      message: zh ? "如何处理？/ How to handle?" : "How to handle? / 如何处理？",
+      choices: [
+        { value: "overwrite", name: zh ? "覆盖 — 使用 ccmm 状态栏" : "Overwrite — use ccmm statusLine" },
+        { value: "keep", name: zh ? "保留 — 不做更改" : "Keep — leave as-is" },
+      ],
+    });
+    shouldSetSL = action === "overwrite";
+  }
+
+  if (shouldSetSL) {
+    settings.statusLine = { type: "command" as const, command: "ccmm statusline" };
+  }
 
   mkdirSync(dirname(sp), { recursive: true });
   writeFileSync(sp, JSON.stringify(settings, null, 2) + "\n", "utf-8");

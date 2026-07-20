@@ -1,10 +1,13 @@
 import type { Command } from "commander";
 import { select, input, confirm, password, Separator } from "@inquirer/prompts";
 import pc from "picocolors";
+import * as fs from "node:fs";
+import { dirname } from "node:path";
 import { loadConfig, saveConfig, type Config } from "../store/config.js";
 import { PROVIDER_TEMPLATES } from "../providers/registry.js";
 import { t, type Lang } from "../i18n/index.js";
 import { isAutoStartEnabled, enableAutoStart, disableAutoStart } from "../util/autostart.js";
+import { claudeSettingsPaths } from "../util/paths.js";
 
 export function registerConfig(program: Command): void {
   program
@@ -86,6 +89,11 @@ async function mainMenu(c: Config): Promise<void> {
           ),
           description: t("config.desc.autostart", L),
         },
+        {
+          value: "sync",
+          name: pc.bold(t("config.sync", L)),
+          description: t("config.desc.sync", L),
+        },
         new Separator(),
         {
           value: "discard",
@@ -105,6 +113,7 @@ async function mainMenu(c: Config): Promise<void> {
     if (choice === "discard") { discard = true; continue; }
     if (choice === "language") { await editLanguage(c); continue; }
     if (choice === "autostart") { await editAutoStart(c); continue; }
+    if (choice === "sync") { await editSyncSettings(c); continue; }
 
     console.log("");
     switch (choice) {
@@ -491,5 +500,66 @@ async function editAutoStart(c: Config): Promise<void> {
   if (action === "back") { console.log(""); return; }
   if (action === "enable") { enableAutoStart(); console.log(pc.green(t("as.enabled", L))); }
   if (action === "disable") { disableAutoStart(); console.log(pc.green(t("as.disabled2", L))); }
+  console.log("");
+}
+
+// ── Sync Claude Code settings ──────────────────────────────
+
+async function editSyncSettings(c: Config): Promise<void> {
+  const L = c.language ?? "zh-CN";
+  console.log(pc.bold(t("sync.title", L)));
+  console.log("");
+
+  // Find settings.json
+  let sp = "";
+  for (const p of claudeSettingsPaths()) {
+    if (fs.existsSync(p)) { sp = p; break; }
+  }
+  if (!sp || !fs.existsSync(sp)) {
+    console.log(pc.yellow(t("sync.nosettings", L)));
+    console.log("");
+    return;
+  }
+
+  console.log(pc.dim(t("sync.checking", L)));
+
+  let settings: Record<string, unknown> = {};
+  try { settings = JSON.parse(fs.readFileSync(sp, "utf-8")); } catch { /* use empty */ }
+
+  const currentSL = (settings.statusLine as { command?: string })?.command;
+  const isOurs = currentSL === "ccmm statusline";
+  console.log(t("sync.found", L) + " " + (isOurs ? pc.green(t("sync.ours", L)) : pc.yellow(currentSL || t("sync.other", L))));
+
+  if (!isOurs) {
+    console.log("");
+    const overwrite = await confirm({
+      message: t("sync.overwrite", L),
+      default: true,
+    });
+    if (!overwrite) { console.log(""); return; }
+  }
+
+  // Backup
+  const bk = sp + "." + new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19) + ".bak";
+  fs.copyFileSync(sp, bk);
+  console.log(pc.dim((L === "zh-CN" ? "  已备份: " : "  Backed up: ") + bk));
+
+  if (!isOurs && !settings.statusLine) {
+    settings.statusLine = { type: "command", command: "ccmm statusline" };
+  } else if (!isOurs) {
+    const sl = settings.statusLine as Record<string, unknown> || {};
+    sl.command = "ccmm statusline";
+    sl.type = "command";
+    settings.statusLine = sl;
+  }
+
+  const env = (settings.env as Record<string, string>) || {};
+  env.ANTHROPIC_BASE_URL = "http://" + c.proxy.host + ":" + c.proxy.port;
+  env.ANTHROPIC_AUTH_TOKEN = env.ANTHROPIC_AUTH_TOKEN || "ccmm-proxy";
+  settings.env = env;
+
+  fs.mkdirSync(dirname(sp), { recursive: true });
+  fs.writeFileSync(sp, JSON.stringify(settings, null, 2) + "\n", "utf-8");
+  console.log(pc.green(t("synced", L)));
   console.log("");
 }
