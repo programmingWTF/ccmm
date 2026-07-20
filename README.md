@@ -19,13 +19,15 @@
 
 ## Why ccmm?
 
-Claude Code has gaps for people who care about **which model** they run and **what it costs**:
+Claude Code picks models automatically based on thinking depth, but it doesn't let you **choose which models those are** — and it sure doesn't let you **switch all five at once**.
 
-- Switching models requires `/model` (breaks flow) or editing settings and restarting.
-- No at-a-glance view of **cache-hit rate**, **token usage**, or **spend**.
-- If you use a **relay / proxy API**, Claude's built-in cost is wrong — it uses Anthropic list prices for the model name *it* sent.
+ccmm flips that: you define a **方案 (plan)** — a named set of five model slots mapping each thinking depth (auto / high / medium / low / subagent) to whatever model you want, on whatever provider you trust. Then one command swaps the entire plan. Live. Mid-session. No restart.
 
-ccmm closes all three with a single **localhost proxy** that sits between Claude Code and your provider — one choke point for **routing** AND **metering**.
+Beyond switching:
+
+- **Your cost, not Anthropic's** — if you route through a different provider, Claude's built-in cost number is wrong. ccmm meters at the proxy on the *actual* forwarded model with your own price table.
+- **Cache-hit visibility** — ccmm tracks `cache_read_input_tokens` and `cache_creation_input_tokens` from SSE events and shows the real cache-hit percentage in the status line. You can see whether your provider is giving you the caching you're paying for.
+- **No workflow interruption** — `!ccmm use my-plan` in the Claude Code prompt box. Hot-reloaded. Instant.
 
 ## Features
 
