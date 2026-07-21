@@ -4,7 +4,7 @@
 >
 > Bonus: real-time cost metering, cache-hit tracking, budget alerts — all in the status line.
 
-< [English](./README.md) | 简体中文 >
+< English | [简体中文](./README.zh.md) >
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@pgwtf/ccmm"><img src="https://img.shields.io/npm/v/@pgwtf/ccmm?color=blue" alt="npm version" /></a>

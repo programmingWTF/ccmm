@@ -4,7 +4,7 @@
 >
 > 附赠：实时费用计量、缓存命中追踪、预算告警 — 全在状态栏。
 
-< English | [简体中文](./README.zh.md) >
+< [English](./README.md) | 简体中文 >
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@pgwtf/ccmm"><img src="https://img.shields.io/npm/v/@pgwtf/ccmm?color=blue" alt="npm version" /></a>
