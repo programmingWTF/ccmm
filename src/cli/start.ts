@@ -4,6 +4,8 @@ import { readFileSync, existsSync, openSync, mkdirSync } from "node:fs";
 import { pidPath, ccmmDir } from "../util/paths.js";
 import { isProxyRunning, stopProxy } from "../proxy/server.js";
 import { loadConfig } from "../store/config.js";
+import { checkForUpdate } from "../util/update-check.js";
+import { t } from "../i18n/index.js";
 import pc from "picocolors";
 
 const LOG_PATH = ccmmDir() + "/proxy.log";
@@ -12,6 +14,9 @@ export function registerStart(program: Command): void {
   program.command("start")
     .description("启动代理守护进程 / Start the proxy daemon")
     .action(async () => {
+      // Auto-check for updates (non-blocking notification)
+      notifyUpdate();
+
       if (isProxyRunning()) {
         const pid = readFileSync(pidPath(), "utf-8").trim();
         console.log(pc.yellow("代理已在运行 (PID: " + pid + ") / Proxy is already running (PID: " + pid + ")"));
@@ -71,4 +76,20 @@ export function registerStart(program: Command): void {
       const content = readFileSync(LOG_PATH, "utf-8");
       console.log(content || "(empty)");
     });
+}
+
+// ── Update notification helper ─────────────────────────
+
+const VERSION = "0.1.7";
+
+function notifyUpdate(): void {
+  try {
+    const c = loadConfig();
+    const L = c.language ?? "zh-CN";
+    const info = checkForUpdate(VERSION);
+    if (info?.hasUpdate) {
+      console.log(pc.yellow("  ⚡ " + t("update.notify", L) + info.latestVersion + t("update.notifyHint", L)));
+      console.log("");
+    }
+  } catch { /* silent — never block the user */ }
 }

@@ -8,6 +8,7 @@ import { PROVIDER_TEMPLATES } from "../providers/registry.js";
 import { t, type Lang } from "../i18n/index.js";
 import { isAutoStartEnabled, enableAutoStart, disableAutoStart } from "../util/autostart.js";
 import { claudeSettingsPaths } from "../util/paths.js";
+import { checkForUpdate } from "../util/update-check.js";
 
 export function registerConfig(program: Command): void {
   program
@@ -16,6 +17,9 @@ export function registerConfig(program: Command): void {
     .action(async () => {
       const sessionConfig = loadConfig();
       const L = sessionConfig.language ?? "zh-CN";
+
+      // Auto-check for updates (non-blocking notification)
+      notifyUpdate(sessionConfig);
 
       console.log("");
       console.log(pc.bold(pc.cyan("  " + t("config.title", L))));
@@ -562,4 +566,18 @@ async function editSyncSettings(c: Config): Promise<void> {
   fs.writeFileSync(sp, JSON.stringify(settings, null, 2) + "\n", "utf-8");
   console.log(pc.green(t("synced", L)));
   console.log("");
+}
+
+// ── Update notification helper ─────────────────────────
+
+const VERSION = "0.1.7";
+
+function notifyUpdate(c: Config): void {
+  try {
+    const L = c.language ?? "zh-CN";
+    const info = checkForUpdate(VERSION);
+    if (info?.hasUpdate) {
+      console.log(pc.yellow("  ⚡ " + t("update.notify", L) + info.latestVersion + t("update.notifyHint", L)));
+    }
+  } catch { /* silent — never block the user */ }
 }

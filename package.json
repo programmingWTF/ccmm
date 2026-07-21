@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Claude Code Model Manager — switch models mid-session, route to any provider, watch live usage & cost",
   "type": "module",
   "main": "dist/index.js",

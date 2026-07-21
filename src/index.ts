@@ -11,9 +11,10 @@ import { registerModels } from "./cli/models.js";
 import { registerCurrent } from "./cli/current.js";
 import { registerSetup } from "./cli/setup.js";
 import { registerConfig } from "./cli/config.js";
+import { registerUpdate } from "./cli/update.js";
 import { startProxy } from "./proxy/server.js";
 
-const VERSION = "0.1.6";
+const VERSION = "0.1.7";
 
 async function main(): Promise<void> {
   if (process.argv[2] === "_daemon") {
@@ -55,6 +56,7 @@ async function main(): Promise<void> {
   registerCurrent(program);
   registerSetup(program);
   registerConfig(program);
+  registerUpdate(program, VERSION);
   program.parse();
 }
 

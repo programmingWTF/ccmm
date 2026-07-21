@@ -11,6 +11,7 @@ import { PROVIDER_TEMPLATES } from "../providers/registry.js";
 import { isProxyRunning, stopProxy } from "../proxy/server.js";
 import { t, type Lang } from "../i18n/index.js";
 import { enableAutoStart } from "../util/autostart.js";
+import { checkForUpdate } from "../util/update-check.js";
 
 const { existsSync, readFileSync, writeFileSync, copyFileSync, mkdirSync } = fs;
 
@@ -51,6 +52,9 @@ export function registerSetup(program: Command): void {
   program.command("setup")
     .description("交互式配置向导 / Interactive setup wizard")
     .action(async () => {
+      // Auto-check for updates (non-blocking notification)
+      notifyUpdate();
+
       console.log("");
       console.log(pc.bold(pc.cyan("  ccmm setup wizard")));
       console.log(pc.dim("  " + t("setup.subtitle", "zh-CN")));
@@ -469,4 +473,19 @@ async function finish(c: ReturnType<typeof loadConfig>, lang: Lang): Promise<voi
     console.log(pc.green(t("setup.proxyRunning", lang)));
   }
   console.log("");
+}
+
+// ── Update notification helper ─────────────────────────
+
+const VERSION = "0.1.7";
+
+function notifyUpdate(): void {
+  try {
+    const c = loadConfig();
+    const L = c.language ?? "zh-CN";
+    const info = checkForUpdate(VERSION);
+    if (info?.hasUpdate) {
+      console.log(pc.yellow("  ⚡ " + t("update.notify", L) + info.latestVersion + t("update.notifyHint", L)));
+    }
+  } catch { /* silent — never block the user */ }
 }
