@@ -13,7 +13,7 @@ import { registerSetup } from "./cli/setup.js";
 import { registerConfig } from "./cli/config.js";
 import { startProxy } from "./proxy/server.js";
 
-const VERSION = "0.1.5";
+const VERSION = "0.1.6";
 
 async function main(): Promise<void> {
   if (process.argv[2] === "_daemon") {
