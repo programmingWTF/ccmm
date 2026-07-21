@@ -8,8 +8,7 @@ import { t } from "../i18n/index.js";
 export function registerUpdate(program: Command, version: string): void {
   program.command("update")
     .description("检查并更新 ccmm / Check and update ccmm")
-    .option("-f, --force", "强制检查（忽略缓存）/ Force check (ignore cache)")
-    .action(async (opts: { force?: boolean }) => {
+    .action(async () => {
       const c = loadConfig();
       const L = c.language ?? "zh-CN";
 
@@ -18,7 +17,7 @@ export function registerUpdate(program: Command, version: string): void {
       console.log(pc.dim("  " + t("update.checking", L)));
       console.log("");
 
-      const info = checkForUpdate(version, opts.force ?? false);
+      const info = checkForUpdate(version, true);
 
       if (!info) {
         console.log(pc.yellow("  " + t("update.networkFail", L)));

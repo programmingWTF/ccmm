@@ -119,16 +119,18 @@ ccmm update               # 检查并安装更新
       }
     }
   },
-  "prices": {
+  "pricesUSD": {
     "deepseek-v4-pro": { "input": 2.0, "output": 8.0, "cacheRead": 0.2, "cacheWrite": 3.0 }
   },
+  "pricesCNY": {},
   "budget": { "dailyUsd": 20, "alert": true }
 }
 ```
 
 - **方案 (Provider)** — 一个命名配置（端点 + API Key + 5 槽 `modelMap`）。`ccmm use <名称>` 一键切换整套方案。
 - **`modelMap`** — 将 Claude Code 的 5 个思维深度占位符映射到实际上游模型 ID。
-- **定价** — 美元 / 100万 tokens。费用按**实际转发**的模型计算，不受中继重映射影响。
+- **定价** — 每 100万 tokens，按货币独立存储（`pricesUSD` / `pricesCNY`）。费用按**实际转发**的模型计算，不受中继重映射影响。
+- **`currency`** — `"USD"` 或 `"CNY"`。决定使用哪套价格表和货币符号（`$`/`¥`）。
 - **`language`** — 界面语言，`"zh-CN"` 或 `"en"`。
 
 ## 🔧 工作原理

@@ -14,7 +14,7 @@ import { registerConfig } from "./cli/config.js";
 import { registerUpdate } from "./cli/update.js";
 import { startProxy } from "./proxy/server.js";
 
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 
 async function main(): Promise<void> {
   if (process.argv[2] === "_daemon") {

@@ -1,5 +1,5 @@
 import { mkdirSync, readFileSync, writeFileSync, watch } from "node:fs";
-import { ConfigSchema, DEFAULT_CONFIG, type Config } from "../schemas/config.js";
+import { ConfigSchema, DEFAULT_CONFIG, type Config, type Price, type Currency } from "../schemas/config.js";
 
 export type { Config };
 import { configPath, ccmmDir } from "../util/paths.js";
@@ -22,6 +22,11 @@ export function loadConfig(): Config {
   try {
     const raw = readFileSync(configPath(), "utf-8");
     const parsed = JSON.parse(raw);
+    // Backward compat: migrate old "prices" field to pricesUSD
+    if (parsed.prices && !parsed.pricesUSD) {
+      parsed.pricesUSD = parsed.prices;
+      delete parsed.prices;
+    }
     const result = ConfigSchema.safeParse(parsed);
     if (!result.success) {
       throw new Error(
@@ -54,6 +59,20 @@ export function ensureConfigExists(): Config {
   }
   saveConfig(config);
   return config;
+}
+
+/** Get the prices record for the config's active currency. */
+export function getPrices(config: Config): Record<string, Price> {
+  return config.currency === "CNY" ? config.pricesCNY : config.pricesUSD;
+}
+
+/** Set the prices record for the config's active currency (mutates config). */
+export function setPrices(config: Config, prices: Record<string, Price>): void {
+  if (config.currency === "CNY") {
+    config.pricesCNY = prices;
+  } else {
+    config.pricesUSD = prices;
+  }
 }
 
 export type ConfigWatcher = { close(): void };

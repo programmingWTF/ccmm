@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-07-21
+
+### Added
+- **Per-currency price isolation** — `pricesUSD` and `pricesCNY` stored independently
+  - Switching currency loads the target currency's price config with a warning
+  - Old `prices` field auto-migrates to `pricesUSD` on load
+- CLI cancel support — type `q` at any price input prompt to abort (no more Ctrl+C only)
+
+### Changed
+- `ccmm update` no longer accepts `--force` (always checks npm registry directly)
+- Price prompts now show the active currency symbol (`$` or `¥`)
+- Docs updated: `pricesUSD`/`pricesCNY` in config examples, `currency` field explained
+
+### Tests
+- New: `getPrices` / `setPrices` / backward-compat tests (+6)
+- Total: 109 tests
+
 ## [0.2.0] - 2026-07-21
 
 ### Added

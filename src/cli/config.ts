@@ -3,7 +3,7 @@ import { select, input, confirm, password, Separator } from "@inquirer/prompts";
 import pc from "picocolors";
 import * as fs from "node:fs";
 import { dirname } from "node:path";
-import { loadConfig, saveConfig, type Config } from "../store/config.js";
+import { loadConfig, saveConfig, getPrices, setPrices, type Config } from "../store/config.js";
 import { PROVIDER_TEMPLATES } from "../providers/registry.js";
 import { t, type Lang } from "../i18n/index.js";
 import { isAutoStartEnabled, enableAutoStart, disableAutoStart } from "../util/autostart.js";
@@ -38,7 +38,7 @@ async function mainMenu(c: Config): Promise<void> {
   while (!save && !discard) {
     const L = c.language ?? "zh-CN";
     const vCount = Object.keys(c.providers).length;
-    const priceCount = Object.keys(c.prices).length;
+    const priceCount = Object.keys(getPrices(c)).length;
     const autoOn = isAutoStartEnabled();
 
     const choice = await select({
@@ -353,13 +353,15 @@ async function editPrices(c: Config): Promise<void> {
   const L = c.language ?? "zh-CN";
   let back = false;
   while (!back) {
-    const models = Object.keys(c.prices);
+    const prices = getPrices(c);
+    const models = Object.keys(prices);
     const action = await select({
       message: t("price.title", L),
       choices: [
         ...models.map((m) => {
-          const pr = c.prices[m]!;
-          return { value: "edit:" + m, name: pc.bold(m) + pc.dim("  $" + pr.input + "/$" + pr.output), description: t("price.desc", L) };
+          const pr = prices[m]!;
+          const sym = c.currency === "CNY" ? "¥" : "$";
+          return { value: "edit:" + m, name: pc.bold(m) + pc.dim("  " + sym + pr.input + "/" + sym + pr.output), description: t("price.desc", L) };
         }),
         { value: "add", name: pc.green(t("price.add", L)) },
         new Separator(),
@@ -376,14 +378,17 @@ async function editPrices(c: Config): Promise<void> {
 async function addPrice(c: Config): Promise<void> {
   const L = c.language ?? "zh-CN";
   console.log(pc.bold(t("price.titleAdd", L)));
+  console.log(pc.dim(t("price.cancelHint", L)));
   console.log("");
-  const model = await input({ message: t("price.modelId", L), validate: (v: string) => v.trim().length > 0 ? true : t("proxy.required", L) });
+  const model = await input({ message: t("price.modelId", L), validate: (v: string) => v.trim().toLowerCase() === "q" || v.trim().length > 0 ? true : t("proxy.required", L) });
+  if (model.trim().toLowerCase() === "q") { console.log(pc.dim(t("price.cancelled", L))); console.log(""); return; }
   await inputPriceFields(model.trim(), c);
 }
 
 async function editOnePrice(model: string, c: Config): Promise<void> {
   const L = c.language ?? "zh-CN";
-  if (!c.prices[model]) return;
+  const prices = getPrices(c);
+  if (!prices[model]) return;
   const action = await select({
     message: pc.bold(model) + t("price.chooseAction", L),
     choices: [
@@ -396,7 +401,7 @@ async function editOnePrice(model: string, c: Config): Promise<void> {
   if (action === "back") return;
   if (action === "delete") {
     const ok = await confirm({ message: t("price.confirmDel", L) + pc.bold(model) + t("price.confirmDel2", L), default: false });
-    if (ok) { delete c.prices[model]; console.log(pc.green(t("price.deleted", L)) + model); }
+    if (ok) { delete prices[model]; setPrices(c, prices); console.log(pc.green(t("price.deleted", L)) + model); }
     return;
   }
   await inputPriceFields(model, c);
@@ -404,14 +409,22 @@ async function editOnePrice(model: string, c: Config): Promise<void> {
 
 async function inputPriceFields(model: string, c: Config): Promise<void> {
   const L = c.language ?? "zh-CN";
+  const sym = c.currency === "CNY" ? "¥" : "$";
   console.log("");
   console.log(pc.dim(t("price.unitHint", L)));
+  console.log(pc.dim(t("price.cancelHint", L)));
   console.log("");
-  const ip = await input({ message: t("price.inputP", L), default: "3.00", validate: (v: string) => !isNaN(parseFloat(v)) && parseFloat(v) >= 0 ? true : t("price.mustGe0", L) });
-  const op = await input({ message: t("price.outputP", L), default: "15.00", validate: (v: string) => !isNaN(parseFloat(v)) && parseFloat(v) >= 0 ? true : t("price.mustGe0", L) });
-  const cr = await input({ message: t("price.cacheReadP", L), default: "0", validate: (v: string) => !isNaN(parseFloat(v)) && parseFloat(v) >= 0 ? true : t("price.mustGe0", L) });
-  const cw = await input({ message: t("price.cacheWriteP", L), default: "0", validate: (v: string) => !isNaN(parseFloat(v)) && parseFloat(v) >= 0 ? true : t("price.mustGe0", L) });
-  c.prices[model] = { input: parseFloat(ip), output: parseFloat(op), cacheRead: parseFloat(cr), cacheWrite: parseFloat(cw) };
+  const ip = await input({ message: t("price.inputP", L) + " (" + sym + ")", default: "3.00", validate: (v: string) => v.trim().toLowerCase() === "q" || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ? true : t("price.mustGe0", L) });
+  if (ip.trim().toLowerCase() === "q") { console.log(pc.dim(t("price.cancelled", L))); console.log(""); return; }
+  const op = await input({ message: t("price.outputP", L) + " (" + sym + ")", default: "15.00", validate: (v: string) => v.trim().toLowerCase() === "q" || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ? true : t("price.mustGe0", L) });
+  if (op.trim().toLowerCase() === "q") { console.log(pc.dim(t("price.cancelled", L))); console.log(""); return; }
+  const cr = await input({ message: t("price.cacheReadP", L) + " (" + sym + ")", default: "0", validate: (v: string) => v.trim().toLowerCase() === "q" || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ? true : t("price.mustGe0", L) });
+  if (cr.trim().toLowerCase() === "q") { console.log(pc.dim(t("price.cancelled", L))); console.log(""); return; }
+  const cw = await input({ message: t("price.cacheWriteP", L) + " (" + sym + ")", default: "0", validate: (v: string) => v.trim().toLowerCase() === "q" || (!isNaN(parseFloat(v)) && parseFloat(v) >= 0) ? true : t("price.mustGe0", L) });
+  if (cw.trim().toLowerCase() === "q") { console.log(pc.dim(t("price.cancelled", L))); console.log(""); return; }
+  const prices = getPrices(c);
+  prices[model] = { input: parseFloat(ip), output: parseFloat(op), cacheRead: parseFloat(cr), cacheWrite: parseFloat(cw) };
+  setPrices(c, prices);
   console.log(pc.green(t("price.set", L)) + pc.bold(model));
   console.log("");
 }
@@ -498,11 +511,19 @@ async function editCurrency(c: Config): Promise<void> {
     choices: [
       { value: "USD", name: t("setup.currency.usd", L) },
       { value: "CNY", name: t("setup.currency.cny", L) },
+      new Separator(),
+      { value: "back", name: pc.dim(t("prov.back", L)) },
     ],
     default: c.currency ?? "USD",
   });
+  if (choice === "back") { console.log(""); return; }
+  if (choice === c.currency) { console.log(""); return; }
+  console.log(pc.yellow(t("cur.switchWarn", L)));
   c.currency = choice as "USD" | "CNY";
+  const prices = getPrices(c);
+  const count = Object.keys(prices).length;
   console.log(pc.green(t("cur.updated", L)) + (choice === "CNY" ? "¥ (CNY)" : "$ (USD)"));
+  console.log(pc.dim(t("cur.priceLoaded", L) + count + (L === "zh-CN" ? " 个" : "")));
   console.log("");
 }
 
@@ -595,7 +616,7 @@ async function editSyncSettings(c: Config): Promise<void> {
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 
 function notifyUpdate(c: Config): void {
   try {

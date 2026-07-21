@@ -80,7 +80,7 @@ export function registerStart(program: Command): void {
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 
 function notifyUpdate(): void {
   try {

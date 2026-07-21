@@ -52,10 +52,12 @@ const ZH: Record<string, string> = {
   "price.titleAdd": "添加模型定价", "price.modelId": "模型 ID:",
   "price.chooseAction": " 的定价 — 选择操作:", "price.edit": "编辑价格",
   "price.delete": "删除", "price.deleted": "✓ 已删除: ",
-  "price.unitHint": "  价格单位为 USD / 100万 tokens。",
-  "price.inputP": "输入价格 ($/1M tokens):", "price.outputP": "输出价格 ($/1M tokens):",
-  "price.cacheReadP": "缓存读取价格 ($/1M tokens，0 跳过):",
-  "price.cacheWriteP": "缓存写入价格 ($/1M tokens，0 跳过):",
+  "price.unitHint": "  价格单位为当前货币 / 100万 tokens。",
+  "price.cancelHint": "  输入 q 可随时取消返回。",
+  "price.cancelled": "  已取消，未保存。",
+  "price.inputP": "输入价格", "price.outputP": "输出价格",
+  "price.cacheReadP": "缓存读取价格（0 跳过）",
+  "price.cacheWriteP": "缓存写入价格（0 跳过）",
   "price.mustGe0": "必须 ≥ 0", "price.set": "✓ 已设置: ",
 
   "budget.title": "预算设置", "budget.enable": "启用每日预算？",
@@ -79,6 +81,8 @@ const ZH: Record<string, string> = {
 
   "cur.title": "货币设置 / Currency", "cur.msg": "选择费用显示货币:",
   "cur.updated": "✓ 货币已切换为: ",
+  "cur.switchWarn": "  ⚠ 切换货币将加载目标货币的价格配置，当前货币的价格已独立保存。",
+  "cur.priceLoaded": "  已加载价格配置: ",
 
   "as.title": "自启动 / Auto-start", "as.statusOn": "当前状态: 已启用",
   "as.statusOff": "当前状态: 已禁用", "as.action": "选择操作:",
@@ -237,10 +241,12 @@ const EN: Record<string, string> = {
   "price.titleAdd": "Add Pricing", "price.modelId": "Model ID:",
   "price.chooseAction": " — what to do?", "price.edit": "Edit prices",
   "price.delete": "Delete", "price.deleted": "✓ Deleted: ",
-  "price.unitHint": "  Prices in USD per 1M tokens.",
-  "price.inputP": "Input price ($/1M):", "price.outputP": "Output price ($/1M):",
-  "price.cacheReadP": "Cache read price ($/1M, 0 to skip):",
-  "price.cacheWriteP": "Cache write price ($/1M, 0 to skip):",
+  "price.unitHint": "  Prices in current currency per 1M tokens.",
+  "price.cancelHint": "  Type q at any prompt to cancel.",
+  "price.cancelled": "  Cancelled, nothing saved.",
+  "price.inputP": "Input price", "price.outputP": "Output price",
+  "price.cacheReadP": "Cache read price (0 to skip)",
+  "price.cacheWriteP": "Cache write price (0 to skip)",
   "price.mustGe0": "Must be ≥ 0", "price.set": "✓ Price set: ",
 
   "budget.title": "Budget Settings", "budget.enable": "Enable daily budget?",
@@ -266,6 +272,8 @@ const EN: Record<string, string> = {
 
   "cur.title": "Currency Settings", "cur.msg": "Choose currency for cost display:",
   "cur.updated": "✓ Currency: ",
+  "cur.switchWarn": "  ⚠ Switching currency loads the target currency's price config. Current prices are saved separately.",
+  "cur.priceLoaded": "  Price config loaded: ",
 
   "as.title": "Auto-start", "as.statusOn": "Status: Enabled",
   "as.statusOff": "Status: Disabled", "as.action": "Choose action:",

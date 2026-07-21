@@ -1,5 +1,6 @@
 import type { Command } from "commander";
-import { loadConfig } from "../store/config.js";
+import { loadConfig, getPrices } from "../store/config.js";
+import { currencySymbol } from "../util/format.js";
 import { t } from "../i18n/index.js";
 import pc from "picocolors";
 
@@ -19,10 +20,12 @@ export function registerModels(program: Command) {
       if (config.defaultProvider) {
         console.log(pc.dim("  " + t("models.default", L)));
       }
-      if (Object.keys(config.prices).length > 0) {
+      const prices = getPrices(config);
+      if (Object.keys(prices).length > 0) {
+        const sym = currencySymbol(config.currency ?? "USD");
         console.log(pc.bold("\n" + t("models.prices", L)));
-        for (const [model, price] of Object.entries(config.prices)) {
-          console.log("  " + model + ": $" + price.input + "/$" + price.output + " per 1M");
+        for (const [model, price] of Object.entries(prices)) {
+          console.log("  " + model + ": " + sym + price.input + "/" + sym + price.output + " per 1M");
         }
       }
     });

@@ -91,7 +91,7 @@ costUsd = (input      * price.input
          + cacheWrite * price.cacheWrite) / 1_000_000
 ```
 
-Prices are **USD per 1M tokens**. Because metering happens at the proxy on the *effective* model, cost is correct even when the requested and effective models differ. If the proxy isn't running, the status line can degrade to parsing Claude Code's transcript JSONL (`~/.claude/projects/**/*.jsonl`), which carries the same usage fields.
+Prices are stored **per currency** (`pricesUSD` / `pricesCNY`) as **per 1M tokens**. The active `currency` field (`"USD"` | `"CNY"`) determines which table is used. Because metering happens at the proxy on the *effective* model, cost is correct even when the requested and effective models differ. If the proxy isn't running, the status line can degrade to parsing Claude Code's transcript JSONL (`~/.claude/projects/**/*.jsonl`), which carries the same usage fields.
 
 ## 7. Data storage & schemas
 
@@ -119,9 +119,10 @@ All under `~/.ccmm/`. Timestamps are **ISO 8601 UTC** (`YYYY-MM-DDTHH:mm:ss.sssZ
     },
     "anthropic": { "baseUrl": "https://api.anthropic.com", "apiKeyEnv": "ANTHROPIC_API_KEY", "wire": "anthropic" }
   },
-  "prices": {
+  "pricesUSD": {
     "deepseek-v4-pro": { "input": 2.0, "output": 8.0, "cacheRead": 0.2, "cacheWrite": 3.0 }
   },
+  "pricesCNY": {},
   "budget": { "dailyUsd": 20, "alert": true }
 }
 ```

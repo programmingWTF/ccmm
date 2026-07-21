@@ -268,7 +268,7 @@ async function handleMessagesRoute(
     res.end();
 
     const usage = parser.getUsage();
-    const price = getPrice(actualEffectiveModel, config.prices);
+    const price = getPrice(actualEffectiveModel, config.currency === "CNY" ? config.pricesCNY : config.pricesUSD);
     const costUsd = computeCost(usage, price);
     recordMetric({
       config, providerName: actualProviderName,

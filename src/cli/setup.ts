@@ -489,7 +489,7 @@ async function finish(c: ReturnType<typeof loadConfig>, lang: Lang): Promise<voi
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 
 function notifyUpdate(): void {
   try {

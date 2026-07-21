@@ -41,7 +41,8 @@ export const ConfigSchema = z.object({
   currency: z.enum(["USD", "CNY"]).default("USD"),
   smallFastModel: SmallFastModelSchema.optional(),
   providers: z.record(ProviderSchema).default({}),
-  prices: z.record(PriceSchema).default({}),
+  pricesUSD: z.record(PriceSchema).default({}),
+  pricesCNY: z.record(PriceSchema).default({}),
   budget: BudgetSchema.optional(),
 });
 export type Config = z.infer<typeof ConfigSchema>;
@@ -57,7 +58,8 @@ export const DEFAULT_CONFIG: Config = {
       wire: "anthropic" as const,
     },
   },
-  prices: {},
+  pricesUSD: {},
+  pricesCNY: {},
 };
 
 export function validateConfig(data: unknown): Config {

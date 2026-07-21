@@ -119,16 +119,18 @@ ccmm update               # check & install updates
       }
     }
   },
-  "prices": {
+  "pricesUSD": {
     "deepseek-v4-pro": { "input": 2.0, "output": 8.0, "cacheRead": 0.2, "cacheWrite": 3.0 }
   },
+  "pricesCNY": {},
   "budget": { "dailyUsd": 20, "alert": true }
 }
 ```
 
 - **Provider/方案** — a named config (endpoint + API key + 5-slot `modelMap`). One `ccmm use <name>` switches the entire plan.
 - **`modelMap`** — maps Claude Code's 5 thinking-depth placeholders to real upstream model IDs.
-- **Prices** — USD per 1M tokens. Cost is computed from the *forwarded* model, not the requested one.
+- **Prices** — per 1M tokens, stored per currency (`pricesUSD` / `pricesCNY`). Cost is computed from the *forwarded* model, not the requested one.
+- **`currency`** — `"USD"` or `"CNY"`. Determines which price table and symbol (`$`/`¥`) is used.
 - **`language`** — `"zh-CN"` or `"en"`.
 
 ## 🔧 How it works
