@@ -8,7 +8,8 @@ import { ccmmDir, claudeSettingsPaths, configPath, pidPath, checkClaudeBinary } 
 import { loadConfig, saveConfig } from "../store/config.js";
 import { setActiveRoute } from "../store/state.js";
 import { PROVIDER_TEMPLATES } from "../providers/registry.js";
-import { isProxyRunning, stopProxy } from "../proxy/server.js";
+import { isProxyRunning } from "../proxy/server.js";
+import { restartProxyDaemon } from "./start.js";
 import { t, type Lang } from "../i18n/index.js";
 import { enableAutoStart } from "../util/autostart.js";
 import { checkForUpdate } from "../util/update-check.js";
@@ -446,16 +447,8 @@ async function finish(c: ReturnType<typeof loadConfig>, lang: Lang): Promise<voi
   if (wasRunning) {
     console.log("");
     console.log(pc.dim("  " + t("setup.proxyRestart", lang)));
-    try { await stopProxy(); } catch { /* may already be stopped */ }
-    await new Promise(r => setTimeout(r, 500));
-    const { spawn } = await import("node:child_process");
-    const child = spawn(process.execPath, [process.argv[1] ?? "", "_daemon"], {
-      detached: true,
-      stdio: "ignore" as const,
-    });
-    child.unref();
-    await new Promise(r => setTimeout(r, 1000));
-    if (isProxyRunning()) {
+    const ok = await restartProxyDaemon();
+    if (ok) {
       console.log(pc.green(t("setup.proxyRestarted", lang)));
     }
   }
@@ -489,7 +482,7 @@ async function finish(c: ReturnType<typeof loadConfig>, lang: Lang): Promise<voi
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.2.2";
+const VERSION = "0.2.3";
 
 function notifyUpdate(): void {
   try {

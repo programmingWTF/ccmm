@@ -84,7 +84,7 @@ ccmm update               # 检查并安装更新
 |---|---|
 | `ccmm setup` | 交互式配置向导 — 添加方案、5 槽映射、预算、自启 |
 | `ccmm config` | 交互式配置编辑器 — 浏览修改所有设置 |
-| `ccmm start` / `stop` / `logs` | 管理代理守护进程 |
+| `ccmm start` / `stop` / `restart` / `logs` | 管理代理守护进程 |
 | `ccmm use <名称>` | 切换活跃方案（热重载，即时生效） |
 | `ccmm current` | 显示当前活跃方案和模型 |
 | `ccmm models` | 列出所有方案和已定价模型 |

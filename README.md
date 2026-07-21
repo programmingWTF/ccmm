@@ -84,7 +84,7 @@ ccmm update               # check & install updates
 |---|---|
 | `ccmm setup` | Interactive wizard — add providers, 5-slot model mapping, budget, auto-start |
 | `ccmm config` | Interactive editor — browse/modify all settings |
-| `ccmm start` / `stop` / `logs` | Proxy daemon lifecycle |
+| `ccmm start` / `stop` / `restart` / `logs` | Proxy daemon lifecycle |
 | `ccmm use <name>` | Switch active provider/方案 (live, hot-reloaded) |
 | `ccmm current` | Show active provider and model |
 | `ccmm models` | List all providers and priced models |

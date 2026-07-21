@@ -10,6 +10,22 @@ import pc from "picocolors";
 
 const LOG_PATH = ccmmDir() + "/proxy.log";
 
+/** Restart the proxy daemon if it's running. Returns true if restarted successfully. */
+export async function restartProxyDaemon(): Promise<boolean> {
+  if (!isProxyRunning()) return false;
+  try { await stopProxy(); } catch { /* may already be stopped */ }
+  await new Promise(r => setTimeout(r, 500));
+  mkdirSync(ccmmDir(), { recursive: true });
+  const logFd = openSync(LOG_PATH, "a");
+  const child = spawn(process.execPath, [process.argv[1] ?? "", "_daemon"], {
+    detached: true,
+    stdio: ["ignore", "ignore", logFd],
+  });
+  child.unref();
+  await new Promise(r => setTimeout(r, 1500));
+  return isProxyRunning();
+}
+
 export function registerStart(program: Command): void {
   program.command("start")
     .description("启动代理守护进程 / Start the proxy daemon")
@@ -66,6 +82,27 @@ export function registerStart(program: Command): void {
       console.log(pc.green("Proxy stopped"));
     });
 
+  program.command("restart")
+    .description("重启代理守护进程 / Restart the proxy daemon")
+    .action(async () => {
+      const c = loadConfig();
+      const L = c.language ?? "zh-CN";
+      if (!isProxyRunning()) {
+        console.log(pc.yellow(t("restart.notRunning", L)));
+        console.log(pc.dim("  " + t("restart.hintStart", L)));
+        return;
+      }
+      console.log(pc.dim("  " + t("restart.restarting", L)));
+      const ok = await restartProxyDaemon();
+      if (ok) {
+        const pid = readFileSync(pidPath(), "utf-8").trim();
+        console.log(pc.green(t("restart.done", L) + " (PID: " + pid + ")"));
+      } else {
+        console.log(pc.red(t("restart.failed", L)));
+        console.log(pc.dim("  " + t("restart.hintLogs", L) + LOG_PATH));
+      }
+    });
+
   program.command("logs")
     .description("查看代理日志 / View proxy logs")
     .action(() => {
@@ -80,7 +117,7 @@ export function registerStart(program: Command): void {
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.2.2";
+const VERSION = "0.2.3";
 
 function notifyUpdate(): void {
   try {

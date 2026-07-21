@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.3] - 2026-07-21
+
+### Added
+- **`ccmm restart`** — one-command proxy restart (`ccmm restart`)
+- Auto-restart proxy after `ccmm config` and `ccmm setup` save changes
+
+### Changed
+- Extracted shared `restartProxyDaemon()` helper (used by restart, config, setup)
+- `ccmm config` no longer prints manual "run ccmm start" hint; restarts automatically
+
+### Tests
+- New: `restartProxyDaemon` unit tests (+4)
+- Total: 118 tests
+
 ## [0.2.2] - 2026-07-21
 
 ### Changed

@@ -9,6 +9,7 @@ import { t, type Lang } from "../i18n/index.js";
 import { isAutoStartEnabled, enableAutoStart, disableAutoStart } from "../util/autostart.js";
 import { claudeSettingsPaths } from "../util/paths.js";
 import { checkForUpdate } from "../util/update-check.js";
+import { restartProxyDaemon } from "./start.js";
 
 export function registerConfig(program: Command): void {
   program
@@ -141,7 +142,13 @@ async function mainMenu(c: Config): Promise<void> {
     console.log("");
     const L = c.language ?? "zh-CN";
     console.log(pc.green(t("config.saved", L)) + pc.dim(" ~/.ccmm/config.json"));
-    console.log(pc.yellow("  " + t("config.restartHint", L) + " ") + pc.cyan("ccmm start") + pc.yellow(" " + t("config.restartHint2", L)));
+    console.log(pc.dim("  " + t("config.restartHint", L)));
+    const ok = await restartProxyDaemon();
+    if (ok) {
+      console.log(pc.green(t("config.restarted", L)));
+    } else {
+      console.log(pc.yellow(t("config.restartSkip", L)));
+    }
     console.log("");
   }
   // discard: just exit without saving
@@ -617,7 +624,7 @@ async function editSyncSettings(c: Config): Promise<void> {
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.2.2";
+const VERSION = "0.2.3";
 
 function notifyUpdate(c: Config): void {
   try {

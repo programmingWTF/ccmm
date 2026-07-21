@@ -22,8 +22,13 @@ const ZH: Record<string, string> = {
   "config.desc.discard": "放弃所有未保存的更改并退出",
   "config.budgetNotSet": "未设置", "config.budgetAlertOn": "，告警开启",
   "config.smallNotSet": "(未设置)",
-  "config.saved": "✓ 配置已保存:", "config.restartHint": "如代理未运行，执行",
-  "config.restartHint2": "以应用更改。",
+  "config.saved": "✓ 配置已保存:", "config.restartHint": "正在重启代理以应用更改...",
+  "config.restartHint2": "",
+  "config.restarted": "  ✓ 代理已重启", "config.restartSkip": "  代理未运行，跳过重启。执行 ccmm start 启动。",
+
+  "restart.notRunning": "代理未运行。", "restart.hintStart": "执行 ccmm start 启动代理。",
+  "restart.restarting": "正在重启代理...", "restart.done": "✓ 代理已重启",
+  "restart.failed": "✗ 重启失败", "restart.hintLogs": "查看日志: ",
 
   "proxy.title": "代理设置", "proxy.host": "监听地址:", "proxy.port": "监听端口:",
   "proxy.portErr": "端口必须在 1-65535 之间", "proxy.required": "必须填写",
@@ -211,8 +216,13 @@ const EN: Record<string, string> = {
   "config.desc.discard": "Discard all unsaved changes and exit",
   "config.budgetNotSet": "not set", "config.budgetAlertOn": ", alerts on",
   "config.smallNotSet": "(not set)",
-  "config.saved": "✓ Config saved:", "config.restartHint": "Run",
-  "config.restartHint2": "to apply changes if proxy is not running.",
+  "config.saved": "✓ Config saved:", "config.restartHint": "Restarting proxy to apply changes...",
+  "config.restartHint2": "",
+  "config.restarted": "  ✓ Proxy restarted", "config.restartSkip": "  Proxy not running, skip restart. Run ccmm start to launch.",
+
+  "restart.notRunning": "Proxy is not running.", "restart.hintStart": "Run ccmm start to launch.",
+  "restart.restarting": "Restarting proxy...", "restart.done": "✓ Proxy restarted",
+  "restart.failed": "✗ Restart failed", "restart.hintLogs": "Check logs: ",
 
   "proxy.title": "Proxy Settings", "proxy.host": "Listen host:", "proxy.port": "Listen port:",
   "proxy.portErr": "Port must be 1-65535", "proxy.required": "Required",

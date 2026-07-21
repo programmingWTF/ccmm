@@ -165,7 +165,7 @@ See README for the user table. Internally each command is a thin function over t
 - `init` — idempotent quick-start: write default config, register `env.ANTHROPIC_BASE_URL`/`AUTH_TOKEN` + `statusLine` in Claude Code `settings.json` (backup first).
 - `config` — interactive menu-driven editor for all settings.
 - `use <name>` — resolve provider → write `state.json`.
-- `start`/`stop` — spawn/terminate the daemon; write `~/.ccmm/proxy.pid`.
+- `start`/`stop`/`restart` — spawn/terminate/restart the daemon; write `~/.ccmm/proxy.pid`. `config` and `setup` auto-restart the proxy after saving.
 - `stats <range>` — read `metrics.jsonl`, group by model/provider/day, print a table.
 - `statusline` — read stdin (Claude Code) + metrics, print one line, exit fast.
 - `doctor` — check: proxy reachable? base URL set? auth env present? version compatible?
