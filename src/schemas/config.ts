@@ -24,7 +24,7 @@ export const ProxyConfigSchema = z.object({
 export type ProxyConfig = z.infer<typeof ProxyConfigSchema>;
 
 export const BudgetSchema = z.object({
-  dailyUsd: z.number().nonnegative().optional(),
+  daily: z.number().nonnegative().optional(),
   alert: z.boolean().optional(),
 });
 export type Budget = z.infer<typeof BudgetSchema>;

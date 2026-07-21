@@ -62,7 +62,7 @@ async function mainMenu(c: Config): Promise<void> {
         {
           value: "budget",
           name: pc.bold(t("config.budget", L)) + pc.dim(
-            "      " + (c.budget?.dailyUsd ? "$" + c.budget.dailyUsd + "/" + (L === "zh-CN" ? "天" : "day") : t("config.budgetNotSet", L)) +
+            "      " + (c.budget?.daily ? (c.currency === "CNY" ? "¥" : "$") + c.budget.daily + "/" + (L === "zh-CN" ? "天" : "day") : t("config.budgetNotSet", L)) +
             (c.budget?.alert ? t("config.budgetAlertOn", L) : "")
           ),
           description: t("config.desc.budget", L),
@@ -435,11 +435,12 @@ async function editBudget(c: Config): Promise<void> {
   const L = c.language ?? "zh-CN";
   console.log(pc.bold(t("budget.title", L)));
   console.log("");
-  const set = await confirm({ message: t("budget.enable", L), default: !!c.budget?.dailyUsd });
+  const set = await confirm({ message: t("budget.enable", L), default: !!c.budget?.daily });
   if (!set) { c.budget = undefined; console.log(pc.green(t("budget.disabled", L))); console.log(""); return; }
-  const dailyStr = await input({ message: t("budget.amount", L), default: String(c.budget?.dailyUsd ?? 20), validate: (v: string) => !isNaN(parseFloat(v)) && parseFloat(v) > 0 ? true : t("budget.mustGt0", L) });
+  const sym = c.currency === "CNY" ? "¥" : "$";
+  const dailyStr = await input({ message: t("budget.amount", L) + " (" + sym + ")", default: String(c.budget?.daily ?? 20), validate: (v: string) => !isNaN(parseFloat(v)) && parseFloat(v) > 0 ? true : t("budget.mustGt0", L) });
   const alert = await confirm({ message: t("budget.alert", L), default: c.budget?.alert ?? true });
-  c.budget = { dailyUsd: parseFloat(dailyStr), alert };
+  c.budget = { daily: parseFloat(dailyStr), alert };
   console.log(pc.green(t("budget.updated", L)));
   console.log("");
 }
@@ -616,7 +617,7 @@ async function editSyncSettings(c: Config): Promise<void> {
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.2.1";
+const VERSION = "0.2.2";
 
 function notifyUpdate(c: Config): void {
   try {

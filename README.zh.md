@@ -123,7 +123,7 @@ ccmm update               # 检查并安装更新
     "deepseek-v4-pro": { "input": 2.0, "output": 8.0, "cacheRead": 0.2, "cacheWrite": 3.0 }
   },
   "pricesCNY": {},
-  "budget": { "dailyUsd": 20, "alert": true }
+  "budget": { "daily": 20, "alert": true }
 }
 ```
 

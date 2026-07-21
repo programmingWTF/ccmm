@@ -105,6 +105,38 @@ describe('getPrices / setPrices', () => {
   });
 });
 
+// ── Budget schema ─────────────────────────────────────────────
+
+describe('BudgetSchema', () => {
+  it('accepts budget with daily field', () => {
+    const result = ConfigSchema.safeParse({ budget: { daily: 20, alert: true } });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.budget?.daily).toBe(20);
+      expect(result.data.budget?.alert).toBe(true);
+    }
+  });
+
+  it('rejects negative daily budget', () => {
+    const result = ConfigSchema.safeParse({ budget: { daily: -5 } });
+    expect(result.success).toBe(false);
+  });
+
+  it('allows budget without alert', () => {
+    const result = ConfigSchema.safeParse({ budget: { daily: 10 } });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.budget?.daily).toBe(10);
+      expect(result.data.budget?.alert).toBeUndefined();
+    }
+  });
+
+  it('budget is optional in config', () => {
+    const result = ConfigSchema.parse({});
+    expect(result.budget).toBeUndefined();
+  });
+});
+
 // ── Backward compat: old "prices" field migration ──────────────
 
 describe('config backward compat', () => {
@@ -114,6 +146,15 @@ describe('config backward compat', () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.pricesUSD).toEqual({});
+    }
+  });
+
+  it('ConfigSchema ignores unknown budget.dailyUsd field gracefully', () => {
+    // Old configs with dailyUsd — zod strips unknown keys
+    const result = ConfigSchema.safeParse({ budget: { dailyUsd: 20, alert: true } });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.budget?.daily).toBeUndefined();
     }
   });
 });

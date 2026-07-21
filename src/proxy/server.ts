@@ -407,7 +407,7 @@ async function updateLiveSummary(config: Config): Promise<void> {
   writeSummary({
     activeModel: route.provider,
     activeProvider: route.provider,
-    budgetDailyUsd: config.budget?.dailyUsd,
+    budgetDaily: config.budget?.daily,
     aggregates: agg,
     updatedAt: nowISO(),
   });

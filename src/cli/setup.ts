@@ -203,7 +203,7 @@ async function runSetup(): Promise<void> {
       default: "20",
       validate: (v: string) => !isNaN(parseFloat(v)) && parseFloat(v) > 0 ? true : "Invalid",
     });
-    c.budget = { dailyUsd: parseFloat(b), alert: true };
+    c.budget = { daily: parseFloat(b), alert: true };
     saveConfig(c);
   }
 
@@ -489,7 +489,7 @@ async function finish(c: ReturnType<typeof loadConfig>, lang: Lang): Promise<voi
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.2.1";
+const VERSION = "0.2.2";
 
 function notifyUpdate(): void {
   try {

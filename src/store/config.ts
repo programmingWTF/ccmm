@@ -27,6 +27,11 @@ export function loadConfig(): Config {
       parsed.pricesUSD = parsed.prices;
       delete parsed.prices;
     }
+    // Backward compat: migrate old budget.dailyUsd to budget.daily
+    if (parsed.budget && parsed.budget.dailyUsd !== undefined && parsed.budget.daily === undefined) {
+      parsed.budget.daily = parsed.budget.dailyUsd;
+      delete parsed.budget.dailyUsd;
+    }
     const result = ConfigSchema.safeParse(parsed);
     if (!result.success) {
       throw new Error(

@@ -61,7 +61,7 @@ const ZH: Record<string, string> = {
   "price.mustGe0": "必须 ≥ 0", "price.set": "✓ 已设置: ",
 
   "budget.title": "预算设置", "budget.enable": "启用每日预算？",
-  "budget.disabled": "✓ 预算已禁用", "budget.amount": "每日预算 (USD):",
+  "budget.disabled": "✓ 预算已禁用", "budget.amount": "每日预算",
   "budget.mustGt0": "必须 > 0", "budget.alert": "启用预算告警？",
   "budget.updated": "✓ 预算已更新",
 
@@ -106,8 +106,8 @@ const ZH: Record<string, string> = {
   "setup.cleared": "  配置已清除。重新开始...",
   "setup.chooseProv": "选择方案类型",
   "setup.addAnother": "添加另一个方案配置？",
-  "setup.default": "默认方案:", "setup.budget": "设置每日预算？（建议 $20）",
-  "setup.budgetAmt": "每日预算 (USD):",
+  "setup.default": "默认方案:", "setup.budget": "设置每日预算？（建议 20）",
+  "setup.budgetAmt": "每日预算",
   "setup.apply": "应用设置到 Claude Code",
   "setup.skip": "已跳过。之后运行 'ccmm setup'。",
   "setup.saved": "✓ 配置已保存: ",
@@ -250,7 +250,7 @@ const EN: Record<string, string> = {
   "price.mustGe0": "Must be ≥ 0", "price.set": "✓ Price set: ",
 
   "budget.title": "Budget Settings", "budget.enable": "Enable daily budget?",
-  "budget.disabled": "✓ Budget disabled", "budget.amount": "Daily budget (USD):",
+  "budget.disabled": "✓ Budget disabled", "budget.amount": "Daily budget",
   "budget.mustGt0": "Must be > 0", "budget.alert": "Enable budget alerts?",
   "budget.updated": "✓ Budget updated",
 
@@ -297,8 +297,8 @@ const EN: Record<string, string> = {
   "setup.addMore": "Add more providers to existing config",
   "setup.cleared": "  Config cleared. Starting fresh...",
   "setup.chooseProv": "Choose a provider", "setup.addAnother": "Add another config?",
-  "setup.default": "Default provider:", "setup.budget": "Set daily budget? ($20 recommended)",
-  "setup.budgetAmt": "Daily budget (USD):",
+  "setup.default": "Default provider:", "setup.budget": "Set daily budget? (20 recommended)",
+  "setup.budgetAmt": "Daily budget",
   "setup.apply": "Apply to Claude Code settings",
   "setup.skip": "Skipped. Run 'ccmm setup' again.",
   "setup.saved": "✓ Config saved: ",

@@ -58,7 +58,7 @@ export interface LiveSummary {
   activeModel: string;
   activeProvider: string;
   thinkingBudget?: number;
-  budgetDailyUsd?: number;
+  budgetDaily?: number;
   aggregates: MetricsAggregate;
   updatedAt: string;
 }

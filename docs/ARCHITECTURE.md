@@ -123,7 +123,7 @@ All under `~/.ccmm/`. Timestamps are **ISO 8601 UTC** (`YYYY-MM-DDTHH:mm:ss.sssZ
     "deepseek-v4-pro": { "input": 2.0, "output": 8.0, "cacheRead": 0.2, "cacheWrite": 3.0 }
   },
   "pricesCNY": {},
-  "budget": { "dailyUsd": 20, "alert": true }
+  "budget": { "daily": 20, "alert": true }
 }
 ```
 Validated with a `zod` schema on load; invalid config → clear error + non-zero exit.

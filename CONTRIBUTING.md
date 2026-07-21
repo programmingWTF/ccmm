@@ -27,7 +27,7 @@ npm install && npm run build && npm test
 ## PR checklist
 
 - [ ] `npm run build` passes
-- [ ] `npm test` passes (109 tests)
+- [ ] `npm test` passes (114 tests)
 - [ ] New features have tests
 - [ ] UI text added to `src/i18n/index.ts`
 - [ ] No secrets committed

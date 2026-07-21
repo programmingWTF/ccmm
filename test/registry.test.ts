@@ -90,7 +90,7 @@ describe("buildConfigFromTemplate", () => {
 
   it("sets a default budget ($20/day with alert)", () => {
     const { config } = buildConfigFromTemplate(anthropicTemplate, "k");
-    expect(config.budget?.dailyUsd).toBe(20);
+    expect(config.budget?.daily).toBe(20);
     expect(config.budget?.alert).toBe(true);
   });
 });

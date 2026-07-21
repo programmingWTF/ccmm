@@ -39,8 +39,8 @@ function renderFromSummary(summary: import("../schemas/metrics.js").LiveSummary,
   const ti = agg.todayCacheRead + agg.todayCacheWrite + agg.todayInput;
   if (ti > 0) parts.push("cache " + formatPercent(agg.todayCacheRead / ti));
   if (agg.todayCost > 0) parts.push(formatCost(agg.todayCost, currency) + " today");
-  if (summary.budgetDailyUsd && summary.budgetDailyUsd > 0) {
-    parts.push(formatCost(Math.max(0, summary.budgetDailyUsd - agg.todayCost), currency) + " left");
+  if (summary.budgetDaily && summary.budgetDaily > 0) {
+    parts.push(formatCost(Math.max(0, summary.budgetDaily - agg.todayCost), currency) + " left");
   } else {
     parts.push("∞ left");
   }

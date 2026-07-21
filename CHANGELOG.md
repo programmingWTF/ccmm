@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - 2026-07-21
+
+### Changed
+- Budget field renamed `dailyUsd` → `daily` (currency-agnostic, follows active currency)
+- Budget display uses `$` or `¥` based on current `currency` setting
+- Old `budget.dailyUsd` auto-migrates to `budget.daily` on config load
+- i18n: removed hardcoded "USD" / "$" from budget prompts
+
+### Tests
+- New: `BudgetSchema` validation tests (+4)
+- New: backward-compat test for old `dailyUsd` field (+1)
+- Total: 114 tests
+
 ## [0.2.1] - 2026-07-21
 
 ### Added

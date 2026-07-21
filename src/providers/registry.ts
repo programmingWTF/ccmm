@@ -111,7 +111,7 @@ export function buildConfigFromTemplate(
       profiles,
       providers: { [providerId]: provider },
       prices: {},
-      budget: { dailyUsd: 20, alert: true },
+      budget: { daily: 20, alert: true },
     },
     envVars,
   };

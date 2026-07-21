@@ -22,3 +22,6 @@ _write_server.js
 .claude/plans/
 .claude/worktrees/
 .claude/scheduled_tasks.json
+
+# Qoder IDE state
+.qoder/
