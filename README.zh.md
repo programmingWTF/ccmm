@@ -4,7 +4,13 @@
 >
 > 附赠：实时费用计量、缓存命中追踪、预算告警 — 全在状态栏。
 
-< [English](./README.md) | [简体中文](./README.zh.md) >
+< English | [简体中文](./README.zh.md) >
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@pgwtf/ccmm"><img src="https://img.shields.io/npm/v/@pgwtf/ccmm?color=blue" alt="npm version" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@pgwtf/ccmm" alt="license" /></a>
+  <img src="https://img.shields.io/node/v/@pgwtf/ccmm" alt="node version" />
+</p>
 
 ```
 ┌──────────────┐   ANTHROPIC_BASE_URL    ┌──────────────┐        ┌─────────────────────┐
@@ -45,6 +51,11 @@ ccmm 把这个权力还给你：你定义一个**方案** — 一组命名的五
 | 🌍 **中英双语** | 在 `ccmm setup` 时选择语言，`ccmm config` 中随时切换。 |
 | 🚀 **开机自启** | 可选：系统登录时自动启动代理守护进程。 |
 | 🧩 **插件集成** | 安装时自动注册状态栏和 MCP 工具。 |
+
+## 环境要求
+
+- Node.js >= 18.0.0
+- 已安装 Claude Code（`@anthropic-ai/claude-code`）
 
 ## 安装
 

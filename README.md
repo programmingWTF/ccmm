@@ -4,7 +4,13 @@
 >
 > Bonus: real-time cost metering, cache-hit tracking, budget alerts — all in the status line.
 
-< [English](./README.md) | [简体中文](./README.zh.md) >
+< [English](./README.md) | 简体中文 >
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@pgwtf/ccmm"><img src="https://img.shields.io/npm/v/@pgwtf/ccmm?color=blue" alt="npm version" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/@pgwtf/ccmm" alt="license" /></a>
+  <img src="https://img.shields.io/node/v/@pgwtf/ccmm" alt="node version" />
+</p>
 
 ```
 ┌──────────────┐   ANTHROPIC_BASE_URL    ┌──────────────┐        ┌─────────────────────┐
@@ -45,6 +51,11 @@ Beyond switching:
 | 🌍 **Bilingual** | 中文 / English — choose on `ccmm setup`, switch anytime in `ccmm config`. |
 | 🚀 **Auto-start** | Optional: auto-launch the proxy daemon on system login. |
 | 🧩 **Plugin** | Auto-registers status line and MCP tools on install. |
+
+## Prerequisites
+
+- Node.js >= 18.0.0
+- Claude Code installed (`@anthropic-ai/claude-code`)
 
 ## Install
 
