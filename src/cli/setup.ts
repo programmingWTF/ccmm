@@ -4,7 +4,7 @@ import { confirm, select, input, password } from "@inquirer/prompts";
 import pc from "picocolors";
 import type { Command } from "commander";
 
-import { ccmmDir, claudeSettingsPaths, configPath, pidPath } from "../util/paths.js";
+import { ccmmDir, claudeSettingsPaths, configPath, pidPath, checkClaudeBinary } from "../util/paths.js";
 import { loadConfig, saveConfig } from "../store/config.js";
 import { setActiveRoute } from "../store/state.js";
 import { PROVIDER_TEMPLATES } from "../providers/registry.js";
@@ -442,6 +442,15 @@ async function finish(c: ReturnType<typeof loadConfig>, lang: Lang): Promise<voi
     if (isProxyRunning()) {
       console.log(pc.green(t("setup.proxyRestarted", lang)));
     }
+  }
+
+  // ── Verify Claude Code installation ──────────────────
+  const cb = checkClaudeBinary();
+  if (!cb.ok) {
+    console.log("");
+    console.log(pc.red(pc.bold("  " + t("setup.claudeMissing", lang))));
+    console.log(pc.yellow("  " + t("setup.claudeMissingFix", lang)));
+    console.log(pc.dim("  " + (lang === "zh-CN" ? "（Windows Defender 可能隔离了 claude.exe）" : "(Windows Defender may have quarantined claude.exe)")));
   }
 
   console.log("");

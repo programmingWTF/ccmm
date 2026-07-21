@@ -11,7 +11,7 @@ import {
   loadAggregateFromDisk,
   getAggregate,
 } from "../store/metrics.js";
-import { nowISO, shortModelName } from "../util/format.js";
+import { nowISO } from "../util/format.js";
 import { pidPath } from "../util/paths.js";
 import type { Config } from "../schemas/config.js";
 
@@ -405,7 +405,7 @@ async function updateLiveSummary(config: Config): Promise<void> {
   const route = router.getRoute();
   const agg = getAggregate();
   writeSummary({
-    activeModel: shortModelName(route.effectiveModel),
+    activeModel: route.provider,
     activeProvider: route.provider,
     budgetDailyUsd: config.budget?.dailyUsd,
     aggregates: agg,

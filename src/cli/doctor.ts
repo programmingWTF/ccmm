@@ -1,6 +1,6 @@
 import type { Command } from "commander";
 import { existsSync } from "node:fs";
-import { ccmmDir } from "../util/paths.js";
+import { ccmmDir, checkClaudeBinary } from "../util/paths.js";
 import { loadConfig } from "../store/config.js";
 import { loadState } from "../store/state.js";
 import { isProxyRunning } from "../proxy/server.js";
@@ -33,6 +33,9 @@ export function registerDoctor(program: Command): void {
       catch (e: unknown) { ck(t("doctor.state", L), false, (e as Error).message); }
 
       ck(t("doctor.proxy", L), isProxyRunning());
+
+      const cb = checkClaudeBinary();
+      ck(t("doctor.claudeBinary", L), cb.ok, cb.ok ? t("doctor.claudeBinaryOk", L) : t("doctor.claudeBinaryMissing", L));
 
       const conflicts: string[] = [];
       for (const key of CONFLICT_KEYS) {

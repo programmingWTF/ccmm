@@ -37,6 +37,8 @@ function renderFromSummary(summary: import("../schemas/metrics.js").LiveSummary)
   if (agg.todayCost > 0) parts.push(formatUsd(agg.todayCost) + " today");
   if (summary.budgetDailyUsd && summary.budgetDailyUsd > 0) {
     parts.push(formatUsd(Math.max(0, summary.budgetDailyUsd - agg.todayCost)) + " left");
+  } else {
+    parts.push("∞ left");
   }
   return parts.join(" · ");
 }
