@@ -13,11 +13,25 @@ import { registerSetup } from "./cli/setup.js";
 import { registerConfig } from "./cli/config.js";
 import { startProxy } from "./proxy/server.js";
 
-const VERSION = "0.1.4";
+const VERSION = "0.1.5";
 
 async function main(): Promise<void> {
   if (process.argv[2] === "_daemon") {
-    await startProxy();
+    const { appendFileSync, mkdirSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const { homedir } = await import("node:os");
+    const ccmmDir = join(homedir(), ".ccmm");
+    try {
+      mkdirSync(ccmmDir, { recursive: true });
+      await startProxy();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? (err.stack || err.message) : String(err);
+      try {
+        mkdirSync(ccmmDir, { recursive: true });
+        appendFileSync(join(ccmmDir, "proxy.log"), "[FATAL] daemon crashed before logging: " + msg + "\n");
+      } catch { /* can't even write log — nothing we can do */ }
+      process.exit(1);
+    }
     return;
   }
 

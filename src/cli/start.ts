@@ -1,8 +1,9 @@
 import type { Command } from "commander";
 import { spawn } from "node:child_process";
-import { readFileSync, existsSync, openSync } from "node:fs";
+import { readFileSync, existsSync, openSync, mkdirSync } from "node:fs";
 import { pidPath, ccmmDir } from "../util/paths.js";
 import { isProxyRunning, stopProxy } from "../proxy/server.js";
+import { loadConfig } from "../store/config.js";
 import pc from "picocolors";
 
 const LOG_PATH = ccmmDir() + "/proxy.log";
@@ -16,6 +17,10 @@ export function registerStart(program: Command): void {
         console.log(pc.yellow("代理已在运行 (PID: " + pid + ") / Proxy is already running (PID: " + pid + ")"));
         return;
       }
+
+      // Ensure ccmm directory exists before opening log file
+      mkdirSync(ccmmDir(), { recursive: true });
+
       const execPath = process.execPath;
       const scriptPath = process.argv[1] ?? "";
       const logFd = openSync(LOG_PATH, "a");
@@ -24,7 +29,7 @@ export function registerStart(program: Command): void {
         stdio: ["ignore", "ignore", logFd],
       });
       child.unref();
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 1500));
       if (isProxyRunning()) {
         const pid = readFileSync(pidPath(), "utf-8").trim();
         console.log(pc.green("Proxy started (PID: " + pid + ")"));
@@ -32,9 +37,16 @@ export function registerStart(program: Command): void {
       } else {
         console.log(pc.red("Failed to start proxy. Last log lines:"));
         try {
-          const tail = readFileSync(LOG_PATH, "utf-8").split("\n").slice(-5).join("\n");
-          console.log(pc.dim(tail));
-        } catch { /* no log */ }
+          const tail = readFileSync(LOG_PATH, "utf-8").split("\n").slice(-10).join("\n");
+          console.log(pc.dim(tail || "(no output — daemon likely crashed on startup)"));
+        } catch {
+          console.log(pc.dim("(unable to read log at " + LOG_PATH + ")"));
+        }
+        // Helpful hint for common causes
+        console.log(pc.yellow("\n  Common causes:"));
+        console.log(pc.dim("  • Port " + loadConfig().proxy.port + " may already be in use"));
+        console.log(pc.dim("  • Check proxy log: cat " + LOG_PATH));
+        console.log(pc.dim("  • Run 'ccmm doctor' to diagnose"));
       }
     });
 
