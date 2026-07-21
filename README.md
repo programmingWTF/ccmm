@@ -23,7 +23,7 @@
 
 ---
 
-## Why ccmm?
+## ❓ Why ccmm?
 
 Claude Code picks models automatically based on thinking depth, but it doesn't let you **choose which models those are** — and it sure doesn't let you **switch all five at once**.
 
@@ -37,7 +37,7 @@ Beyond switching:
 - **Cache-hit visibility** — ccmm tracks `cache_read_input_tokens` and `cache_creation_input_tokens` from SSE events and shows the real cache-hit percentage in the status line. You can see whether your provider is giving you the caching you're paying for.
 - **No workflow interruption** — `!ccmm use my-model` in the Claude Code prompt box. Hot-reloaded. Instant.
 
-## Features
+## ✨ Features
 
 | | |
 |---|---|
@@ -50,32 +50,35 @@ Beyond switching:
 | 🎛 **Interactive config** | `ccmm config` — menu-driven editor for all settings. |
 | 🌍 **Bilingual** | 中文 / English — choose on `ccmm setup`, switch anytime in `ccmm config`. |
 | 🚀 **Auto-start** | Optional: auto-launch the proxy daemon on system login. |
+| 🔄 **Auto-update** | `ccmm update` checks npm for new versions; auto-notifies on `start`/`config`/`setup`. |
 | 🧩 **Plugin** | Auto-registers status line and MCP tools on install. |
 
-## Prerequisites
+## 📋 Prerequisites
 
 - Node.js >= 18.0.0
 - Claude Code installed (`@anthropic-ai/claude-code`)
 
-## Install
+## 📦 Install
 
 ```bash
 npm install -g @pgwtf/ccmm
-ccmm init          # points Claude Code at the proxy + registers the status line
+ccmm setup         # interactive wizard: language → providers → 5-slot model map → done
 ```
 
-`ccmm init` is idempotent and backs up every file it touches.
+`ccmm setup` handles everything (init, provider config, settings sync). It's idempotent and backs up every file it touches.
 
-## Quickstart
+## 🚀 Quickstart
 
 ```bash
-ccmm setup                # interactive wizard: choose language → add providers → 5-slot model map
+ccmm setup                # first-time wizard (skip if already configured)
+ccmm config               # interactive editor — tweak providers, prices, budget anytime
+ccmm start                # start the proxy daemon
 ccmm use deepseek         # switch to DeepSeek (`!ccmm use deepseek` inside Claude)
-ccmm config               # interactive config editor
 ccmm stats today          # what did I spend?
+ccmm update               # check & install updates
 ```
 
-## Commands
+## 📟 Commands
 
 | Command | |
 |---|---|
@@ -90,9 +93,10 @@ ccmm stats today          # what did I spend?
 | `ccmm stats [today\|session\|week\|all]` | Usage & cost report |
 | `ccmm statusline` | (internal) renders the status line |
 | `ccmm doctor` | Diagnose setup |
-| `ccmm init` | Initialize and register with Claude Code |
+| `ccmm update` | Check for updates and install the latest version |
+| `ccmm init` | Quick non-interactive init (prefer `ccmm setup`) |
 
-## Configuration
+## ⚙️ Configuration
 
 `~/.ccmm/config.json`:
 
@@ -127,15 +131,15 @@ ccmm stats today          # what did I spend?
 - **Prices** — USD per 1M tokens. Cost is computed from the *forwarded* model, not the requested one.
 - **`language`** — `"zh-CN"` or `"en"`.
 
-## How it works
+## 🔧 How it works
 
-1. `ccmm init` sets `ANTHROPIC_BASE_URL=http://127.0.0.1:8787`.
+1. `ccmm setup` writes `ANTHROPIC_BASE_URL=http://127.0.0.1:8787` into Claude Code settings.
 2. All Claude Code API requests go through the ccmm proxy.
 3. The proxy checks the active provider's `modelMap` → rewrites `body.model` → forwards.
 4. Response streams back transparently; `usage` is captured from SSE events for metering.
 5. **Prompt caching is preserved** — only `body.model` and auth headers are touched.
 
-## Status line
+## 📊 Status line
 
 ```
 🧠 deepseek-v4-pro · ▲12.4k ▼3.1k · cache 87% · $0.42 today · $19.58 left
@@ -143,20 +147,20 @@ ccmm stats today          # what did I spend?
 
 Auto-degrades to parsing Claude Code's transcript JSONL when the proxy isn't running.
 
-## Roadmap
+## 🗺️ Roadmap
 
 Interactive TUI dashboard, model recommendations, Bedrock/Vertex providers, OpenAI-compatible wire translation.
 
-## Credits
+## 🙏 Credits
 
 - [tweakcc](https://github.com/Piebald-AI/tweakcc) · [claude-code-router](https://github.com/musistudio/claude-code-router) · [LiteLLM](https://github.com/BerriAI/litellm)
 - [How I built a hot-swappable backend proxy for Claude Code](https://hackernoon.com/how-i-built-a-hot-swappable-backend-proxy-for-claude-code)
 - Anthropic's [LLM gateway docs](https://code.claude.com/docs/en/llm-gateway-connect)
 
-## Disclaimer
+## ⚖️ Disclaimer
 
 ccmm is an independent project — **not affiliated with Anthropic**. API keys are stored locally in `~/.ccmm/` and sent only to the providers you specify.
 
-## License
+## 📄 License
 
 MIT ([LICENSE](./LICENSE)).

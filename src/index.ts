@@ -14,7 +14,7 @@ import { registerConfig } from "./cli/config.js";
 import { registerUpdate } from "./cli/update.js";
 import { startProxy } from "./proxy/server.js";
 
-const VERSION = "0.1.7";
+const VERSION = "0.2.0";
 
 async function main(): Promise<void> {
   if (process.argv[2] === "_daemon") {
@@ -43,7 +43,10 @@ async function main(): Promise<void> {
   }
 
   const program = new Command();
-  program.name("ccmm").description("Claude Code 模型方案管理器 / Claude Code Model Manager").version(VERSION);
+  program.name("ccmm").description("Claude Code 模型方案管理器 / Claude Code Model Manager");
+  program.version(VERSION, "-V, --version", "输出版本号 / Output the version number");
+  program.helpOption("-h, --help", "显示帮助信息 / Display help for command");
+  program.addHelpCommand("help [command]", "显示指定命令的帮助 / Display help for a command");
   registerInit(program);
   registerUse(program);
   registerStart(program);

@@ -5,6 +5,7 @@ import {
   MetricEntrySchema,
   EMPTY_AGGREGATE,
 } from "../src/schemas/metrics.js";
+import { ConfigSchema } from "../src/schemas/config.js";
 
 // ── RouteStateSchema ───────────────────────────────────────────
 
@@ -176,5 +177,29 @@ describe("EMPTY_AGGREGATE", () => {
     expect(EMPTY_AGGREGATE.todayCacheRead).toBe(0);
     expect(EMPTY_AGGREGATE.todayCacheWrite).toBe(0);
     expect(EMPTY_AGGREGATE.requestCount).toBe(0);
+  });
+});
+
+// ── ConfigSchema currency ───────────────────────────────────────
+
+describe("ConfigSchema currency", () => {
+  it("defaults currency to USD", () => {
+    const result = ConfigSchema.parse({});
+    expect(result.currency).toBe("USD");
+  });
+
+  it("accepts CNY currency", () => {
+    const result = ConfigSchema.parse({ currency: "CNY" });
+    expect(result.currency).toBe("CNY");
+  });
+
+  it("accepts USD currency", () => {
+    const result = ConfigSchema.parse({ currency: "USD" });
+    expect(result.currency).toBe("USD");
+  });
+
+  it("rejects invalid currency", () => {
+    const result = ConfigSchema.safeParse({ currency: "EUR" });
+    expect(result.success).toBe(false);
   });
 });

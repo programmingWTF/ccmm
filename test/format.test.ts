@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   formatTokens,
   formatUsd,
+  formatCost,
+  currencySymbol,
   formatPercent,
   shortModelName,
   todayKey,
@@ -45,6 +47,38 @@ describe("formatUsd", () => {
     expect(formatUsd(1.5)).toBe("$1.50");
     expect(formatUsd(0.001)).toBe("$0.00");
     expect(formatUsd(123.456)).toBe("$123.46");
+  });
+});
+
+// ── currencySymbol ─────────────────────────────────────────────
+
+describe("currencySymbol", () => {
+  it("returns $ for USD", () => {
+    expect(currencySymbol("USD")).toBe("$");
+  });
+
+  it("returns ¥ for CNY", () => {
+    expect(currencySymbol("CNY")).toBe("¥");
+  });
+});
+
+// ── formatCost ─────────────────────────────────────────────────
+
+describe("formatCost", () => {
+  it("defaults to USD symbol", () => {
+    expect(formatCost(1.5)).toBe("$1.50");
+  });
+
+  it("uses $ for USD", () => {
+    expect(formatCost(0.42, "USD")).toBe("$0.42");
+  });
+
+  it("uses ¥ for CNY", () => {
+    expect(formatCost(0.42, "CNY")).toBe("¥0.42");
+  });
+
+  it("rounds to 2 decimals", () => {
+    expect(formatCost(19.585, "CNY")).toBe("¥19.59");
   });
 });
 

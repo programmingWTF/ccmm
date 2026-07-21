@@ -87,6 +87,11 @@ async function mainMenu(c: Config): Promise<void> {
           description: t("config.desc.language", L),
         },
         {
+          value: "currency",
+          name: pc.bold(t("config.currency", L)) + pc.dim("  " + (c.currency === "CNY" ? "¥ (CNY)" : "$ (USD)")),
+          description: t("config.desc.currency", L),
+        },
+        {
           value: "autostart",
           name: pc.bold(t("config.autostart", L)) + pc.dim(
             "  " + (autoOn ? (L === "zh-CN" ? "已启用" : "Enabled") : (L === "zh-CN" ? "已禁用" : "Disabled"))
@@ -116,6 +121,7 @@ async function mainMenu(c: Config): Promise<void> {
     if (choice === "done") { save = true; continue; }
     if (choice === "discard") { discard = true; continue; }
     if (choice === "language") { await editLanguage(c); continue; }
+    if (choice === "currency") { await editCurrency(c); continue; }
     if (choice === "autostart") { await editAutoStart(c); continue; }
     if (choice === "sync") { await editSyncSettings(c); continue; }
 
@@ -481,6 +487,25 @@ async function editLanguage(c: Config): Promise<void> {
   console.log("");
 }
 
+// ── Currency ────────────────────────────────────────────
+
+async function editCurrency(c: Config): Promise<void> {
+  const L = c.language ?? "zh-CN";
+  console.log(pc.bold(t("cur.title", L)));
+  console.log("");
+  const choice = await select({
+    message: t("cur.msg", L),
+    choices: [
+      { value: "USD", name: t("setup.currency.usd", L) },
+      { value: "CNY", name: t("setup.currency.cny", L) },
+    ],
+    default: c.currency ?? "USD",
+  });
+  c.currency = choice as "USD" | "CNY";
+  console.log(pc.green(t("cur.updated", L)) + (choice === "CNY" ? "¥ (CNY)" : "$ (USD)"));
+  console.log("");
+}
+
 // ── Auto-start ────────────────────────────────────────────
 
 async function editAutoStart(c: Config): Promise<void> {
@@ -570,7 +595,7 @@ async function editSyncSettings(c: Config): Promise<void> {
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.1.7";
+const VERSION = "0.2.0";
 
 function notifyUpdate(c: Config): void {
   try {

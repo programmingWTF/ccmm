@@ -10,7 +10,7 @@ Design document for **ccmm — Claude Code Model Manager**. Target audience: con
 - Switch the active model **live, mid-session**, without restarting Claude Code and without requiring any modification to it.
 - Show accurate **usage / cache-hit / cost** in Claude Code's status line, priced by a user-configurable table (so it stays correct behind relays).
 - Route different models to different **providers** (Anthropic, relays/proxies, local).
-- Install-and-go: one `npm i -g ccmm && ccmm init`.
+- Install-and-go: one `npm i -g @pgwtf/ccmm && ccmm setup`.
 
 **Non-goals (v1)**
 - Translating between wire protocols (OpenAI-compatible ↔ Anthropic). v1 speaks the **Anthropic Messages protocol** only (Anthropic + relays that speak it). Translation is a later milestone.
@@ -101,18 +101,26 @@ All under `~/.ccmm/`. Timestamps are **ISO 8601 UTC** (`YYYY-MM-DDTHH:mm:ss.sssZ
 ```jsonc
 {
   "proxy":   { "host": "127.0.0.1", "port": 8787 },
-  "defaultProfile": "smart",
-  "smallFastModel": { "model": "claude-haiku-3-5", "provider": "anthropic" },
-  "profiles": {
-    "fast":  { "model": "claude-haiku-3-5", "provider": "anthropic" },
-    "smart": { "model": "claude-opus-4-1",  "provider": "anthropic" }
-  },
+  "defaultProvider": "deepseek",
+  "language": "zh-CN",
+  "smallFastModel": { "model": "claude-haiku-4-5-20251001", "provider": "anthropic" },
   "providers": {
-    "anthropic": { "baseUrl": "https://api.anthropic.com", "apiKeyEnv": "ANTHROPIC_API_KEY", "wire": "anthropic" },
-    "relay":     { "baseUrl": "https://my-relay.example.com", "apiKeyEnv": "RELAY_KEY", "wire": "anthropic" }
+    "deepseek": {
+      "baseUrl": "https://api.deepseek.com/anthropic",
+      "apiKeyEnv": "DEEPSEEK_API_KEY",
+      "wire": "anthropic",
+      "modelMap": {
+        "ANTHROPIC_MODEL": "deepseek-v4-pro",
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-flash",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
+        "CLAUDE_CODE_SUBAGENT_MODEL": "deepseek-v4-flash"
+      }
+    },
+    "anthropic": { "baseUrl": "https://api.anthropic.com", "apiKeyEnv": "ANTHROPIC_API_KEY", "wire": "anthropic" }
   },
   "prices": {
-    "claude-opus-4-1": { "input": 15, "output": 75, "cacheWrite": 18.75, "cacheRead": 1.5 }
+    "deepseek-v4-pro": { "input": 2.0, "output": 8.0, "cacheRead": 0.2, "cacheWrite": 3.0 }
   },
   "budget": { "dailyUsd": 20, "alert": true }
 }
@@ -122,9 +130,8 @@ Validated with a `zod` schema on load; invalid config → clear error + non-zero
 ### `state.json` (runtime, written by CLI, watched by proxy)
 ```jsonc
 {
-  "activeProfile": "smart",
-  "provider": "anthropic",
-  "model": "claude-opus-4-1",
+  "activeProvider": "deepseek",
+  "model": "deepseek-v4-pro",
   "updatedAt": "2026-07-20T12:34:56.000Z"
 }
 ```
@@ -153,12 +160,15 @@ Aggregates (session/today) are computed in memory at proxy start by scanning `me
 
 See README for the user table. Internally each command is a thin function over the stores:
 
-- `init` — idempotent: write default config, register `env.ANTHROPIC_BASE_URL`/`AUTH_TOKEN` + `statusLine` in Claude Code `settings.json` (backup first), start proxy.
-- `use <target>` — resolve profile or bare model → write `state.json`.
+- `setup` — interactive wizard: language, providers, 5-slot model map, budget, auto-start, sync settings.json. Supersedes `init`.
+- `init` — idempotent quick-start: write default config, register `env.ANTHROPIC_BASE_URL`/`AUTH_TOKEN` + `statusLine` in Claude Code `settings.json` (backup first).
+- `config` — interactive menu-driven editor for all settings.
+- `use <name>` — resolve provider → write `state.json`.
 - `start`/`stop` — spawn/terminate the daemon; write `~/.ccmm/proxy.pid`.
 - `stats <range>` — read `metrics.jsonl`, group by model/provider/day, print a table.
 - `statusline` — read stdin (Claude Code) + metrics, print one line, exit fast.
 - `doctor` — check: proxy reachable? base URL set? auth env present? version compatible?
+- `update` — check npm registry for new version, optionally install via `npm install -g`.
 
 ## 9. Status line protocol
 

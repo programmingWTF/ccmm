@@ -38,12 +38,14 @@ export const ConfigSchema = z.object({
   proxy: ProxyConfigSchema.default({ host: "127.0.0.1", port: 8787 }),
   defaultProvider: z.string().optional(),
   language: z.enum(["zh-CN", "en"]).default("zh-CN"),
+  currency: z.enum(["USD", "CNY"]).default("USD"),
   smallFastModel: SmallFastModelSchema.optional(),
   providers: z.record(ProviderSchema).default({}),
   prices: z.record(PriceSchema).default({}),
   budget: BudgetSchema.optional(),
 });
 export type Config = z.infer<typeof ConfigSchema>;
+export type Currency = "USD" | "CNY";
 
 export const DEFAULT_CONFIG: Config = {
   proxy: { host: "127.0.0.1", port: 8787 },

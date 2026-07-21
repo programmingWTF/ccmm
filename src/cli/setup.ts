@@ -79,6 +79,18 @@ async function runSetup(): Promise<void> {
   saveConfig(c);
   console.log("");
 
+  // ── Currency ────────────────────────────────────────
+  const currency = await select({
+    message: t("setup.currencyMsg", lang),
+    choices: [
+      { value: "USD", name: t("setup.currency.usd", lang) },
+      { value: "CNY", name: t("setup.currency.cny", lang) },
+    ],
+  }) as "USD" | "CNY";
+  c.currency = currency;
+  saveConfig(c);
+  console.log("");
+
   // ── Detect existing ccmm config ────────────────────
   const existingProviders = Object.entries(c.providers).filter(
     ([, p]) => p.modelMap && Object.keys(p.modelMap).length > 0
@@ -477,7 +489,7 @@ async function finish(c: ReturnType<typeof loadConfig>, lang: Lang): Promise<voi
 
 // ── Update notification helper ─────────────────────────
 
-const VERSION = "0.1.7";
+const VERSION = "0.2.0";
 
 function notifyUpdate(): void {
   try {

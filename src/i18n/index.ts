@@ -6,6 +6,7 @@ const ZH: Record<string, string> = {
   "config.providers": "方案 (Providers)", "config.prices": "定价 (Pricing)",
   "config.budget": "预算 (Budget)", "config.default": "默认方案 (Default)",
   "config.smallFast": "轻量模型 (Small/Fast)", "config.language": "语言/Language",
+  "config.currency": "货币 (Currency)",
   "config.autostart": "自启动 (Auto-start)", "config.done": "保存更改并退出",
   "config.discard": "放弃更改并退出",
   "config.desc.proxy": "代理监听地址和端口",
@@ -15,6 +16,7 @@ const ZH: Record<string, string> = {
   "config.desc.default": "ccmm start 时默认激活的方案",
   "config.desc.smallFast": "轻量请求（≤512 tokens）使用的专用模型",
   "config.desc.language": "切换界面语言",
+  "config.desc.currency": "费用显示使用的货币符号",
   "config.desc.autostart": "开机时自动启动代理",
   "config.desc.done": "保存所有更改并退出",
   "config.desc.discard": "放弃所有未保存的更改并退出",
@@ -75,6 +77,9 @@ const ZH: Record<string, string> = {
   "lang.zh": "简体中文", "lang.en": "English (英语)",
   "lang.updated": "✓ 语言已切换为: ",
 
+  "cur.title": "货币设置 / Currency", "cur.msg": "选择费用显示货币:",
+  "cur.updated": "✓ 货币已切换为: ",
+
   "as.title": "自启动 / Auto-start", "as.statusOn": "当前状态: 已启用",
   "as.statusOff": "当前状态: 已禁用", "as.action": "选择操作:",
   "as.enable": "启用 — 开机自动启动 ccmm 代理",
@@ -115,6 +120,9 @@ const ZH: Record<string, string> = {
   "setup.claudeMissingFix": "  修复命令: npm install -g @anthropic-ai/claude-code --force",
   "setup.langMsg": "Language / 语言:", "setup.lang.zh": "简体中文",
   "setup.lang.en": "English",
+  "setup.currencyMsg": "费用货币 / Currency for cost display:",
+  "setup.currency.usd": "$ 美元 (USD)",
+  "setup.currency.cny": "¥ 人民币 (CNY)",
   "setup.autoStart": "开机时自动启动 ccmm 代理？(Auto-start on login?)",
 
   "use.switched": "✓ 方案:", "use.defaultModel": "  默认模型:",
@@ -183,6 +191,7 @@ const EN: Record<string, string> = {
   "config.providers": "Providers", "config.prices": "Pricing",
   "config.budget": "Budget", "config.default": "Default",
   "config.smallFast": "Small/Fast", "config.language": "Language/语言",
+  "config.currency": "Currency",
   "config.autostart": "Auto-start", "config.done": "Save changes & exit",
   "config.discard": "Discard changes & exit",
   "config.desc.proxy": "Proxy listen address and port",
@@ -192,6 +201,7 @@ const EN: Record<string, string> = {
   "config.desc.default": "Default provider activated on 'ccmm start'",
   "config.desc.smallFast": "Model for lightweight requests (≤512 tokens)",
   "config.desc.language": "Switch UI language",
+  "config.desc.currency": "Currency symbol for cost display",
   "config.desc.autostart": "Auto-start proxy on system login",
   "config.desc.done": "Save all changes and exit",
   "config.desc.discard": "Discard all unsaved changes and exit",
@@ -254,6 +264,9 @@ const EN: Record<string, string> = {
   "lang.zh": "简体中文 (Chinese)", "lang.en": "English",
   "lang.updated": "✓ Language: ",
 
+  "cur.title": "Currency Settings", "cur.msg": "Choose currency for cost display:",
+  "cur.updated": "✓ Currency: ",
+
   "as.title": "Auto-start", "as.statusOn": "Status: Enabled",
   "as.statusOff": "Status: Disabled", "as.action": "Choose action:",
   "as.enable": "Enable — auto-start proxy on login",
@@ -293,6 +306,9 @@ const EN: Record<string, string> = {
   "setup.claudeMissingFix": "  Fix: npm install -g @anthropic-ai/claude-code --force",
   "setup.langMsg": "Language / 语言:", "setup.lang.zh": "简体中文",
   "setup.lang.en": "English",
+  "setup.currencyMsg": "Currency for cost display / 费用货币:",
+  "setup.currency.usd": "$ US Dollar (USD)",
+  "setup.currency.cny": "¥ Chinese Yuan (CNY)",
   "setup.autoStart": "Auto-start ccmm proxy on system login?",
 
   "setup.overwriteTitle": "Existing statusLine detected",

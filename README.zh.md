@@ -23,7 +23,7 @@
 
 ---
 
-## 为什么需要 ccmm？
+## ❓ 为什么需要 ccmm？
 
 Claude Code 会自动根据思维深度选择模型，但它不会让你**自己决定用哪个模型**——更不会让你**一键切换全部五个**。
 
@@ -37,7 +37,7 @@ ccmm 把这个权力还给你：你定义一个**方案** — 一组命名的五
 - **缓存命中率可见** — ccmm 从 SSE 事件中捕获缓存读取和写入 token，在状态栏显示真实的缓存命中率。你能看到你的供应商是否给了你应得的缓存。
 - **不打断工作流** — 在 Claude Code 输入框里敲 `!ccmm use 我的模型`。热重载，即时生效。
 
-## 功能
+## ✨ 功能
 
 | | |
 |---|---|
@@ -50,32 +50,35 @@ ccmm 把这个权力还给你：你定义一个**方案** — 一组命名的五
 | 🎛 **交互式配置** | `ccmm config` — 菜单式编辑器，浏览修改所有设置。 |
 | 🌍 **中英双语** | 在 `ccmm setup` 时选择语言，`ccmm config` 中随时切换。 |
 | 🚀 **开机自启** | 可选：系统登录时自动启动代理守护进程。 |
+| 🔄 **自动更新** | `ccmm update` 检查新版本；运行 `start`/`config`/`setup` 时自动提示。 |
 | 🧩 **插件集成** | 安装时自动注册状态栏和 MCP 工具。 |
 
-## 环境要求
+## 📋 环境要求
 
 - Node.js >= 18.0.0
 - 已安装 Claude Code（`@anthropic-ai/claude-code`）
 
-## 安装
+## 📦 安装
 
 ```bash
 npm install -g @pgwtf/ccmm
-ccmm init          # 将 Claude Code 指向代理 + 注册状态栏
+ccmm setup         # 交互式向导：选语言 → 添加方案 → 配置 5 槽模型映射 → 完成
 ```
 
-`ccmm init` 可重复执行，每次都会备份被修改的文件。
+`ccmm setup` 一站式完成所有初始化（包括 init、方案配置、设置同步）。可重复执行，每次都会备份被修改的文件。
 
-## 快速上手
+## 🚀 快速上手
 
 ```bash
-ccmm setup                # 交互式向导：选语言 → 添加方案 → 配置 5 槽模型映射
+ccmm setup                # 首次配置向导（已配置过可跳过）
+ccmm config               # 交互式编辑器 — 随时调整方案、定价、预算
+ccmm start                # 启动代理守护进程
 ccmm use deepseek         # 切换到 DeepSeek（Claude 内 `!ccmm use deepseek`）
-ccmm config               # 交互式配置编辑器
 ccmm stats today          # 看看今天花了多少？
+ccmm update               # 检查并安装更新
 ```
 
-## 命令
+## 📟 命令
 
 | 命令 | 说明 |
 |---|---|
@@ -90,9 +93,10 @@ ccmm stats today          # 看看今天花了多少？
 | `ccmm stats [today\|session\|week\|all]` | 用量和费用报告 |
 | `ccmm statusline` | （内部）渲染状态栏 |
 | `ccmm doctor` | 诊断配置 |
-| `ccmm init` | 初始化并注册到 Claude Code |
+| `ccmm update` | 检查更新并安装最新版本 |
+| `ccmm init` | 快速非交互式初始化（推荐用 `ccmm setup`） |
 
-## 配置
+## ⚙️ 配置
 
 所有配置存储在 `~/.ccmm/config.json`：
 
@@ -127,15 +131,15 @@ ccmm stats today          # 看看今天花了多少？
 - **定价** — 美元 / 100万 tokens。费用按**实际转发**的模型计算，不受中继重映射影响。
 - **`language`** — 界面语言，`"zh-CN"` 或 `"en"`。
 
-## 工作原理
+## 🔧 工作原理
 
-1. `ccmm init` 在 Claude Code 设置中写入 `ANTHROPIC_BASE_URL=http://127.0.0.1:8787`。
+1. `ccmm setup` 在 Claude Code 设置中写入 `ANTHROPIC_BASE_URL=http://127.0.0.1:8787`。
 2. Claude Code 所有 API 请求流经 ccmm 代理。
 3. 代理检查活跃方案的 `modelMap` → 重写 `body.model` → 转发到供应商。
 4. 响应流透明回传；从 SSE 事件中捕获 `usage` 用于计量。
 5. **Prompt 缓存完全保留** — 代理只改 `body.model` 和认证头，`cache_control` 原封不动。
 
-## 状态栏
+## 📊 状态栏
 
 ```
 🧠 deepseek-v4-pro · ▲12.4k ▼3.1k · cache 87% · $0.42 today · $19.58 left
@@ -143,20 +147,20 @@ ccmm stats today          # 看看今天花了多少？
 
 代理未运行时自动降级为解析 Claude Code 的 transcript JSONL。
 
-## 路线图
+## 🗺️ 路线图
 
 交互式 TUI 面板、模型推荐、Bedrock/Vertex 供应商、OpenAI 协议翻译。
 
-## 致谢
+## 🙏 致谢
 
 - [tweakcc](https://github.com/Piebald-AI/tweakcc) · [claude-code-router](https://github.com/musistudio/claude-code-router) · [LiteLLM](https://github.com/BerriAI/litellm)
 - [How I built a hot-swappable backend proxy for Claude Code](https://hackernoon.com/how-i-built-a-hot-swappable-backend-proxy-for-claude-code)
 - Anthropic [LLM gateway 文档](https://code.claude.com/docs/en/llm-gateway-connect)
 
-## 免责声明
+## ⚖️ 免责声明
 
 ccmm 是独立开源项目 — **与 Anthropic 无关亦未经其背书**。API Key 存储在本地 `~/.ccmm/`，仅发送到你指定的供应商。
 
-## 许可证
+## 📄 许可证
 
 MIT ([LICENSE](./LICENSE))。

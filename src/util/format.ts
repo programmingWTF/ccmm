@@ -6,6 +6,14 @@ export function formatTokens(n: number): string {
 
 export function formatUsd(n: number): string { return "$" + n.toFixed(2); }
 
+export function currencySymbol(currency: "USD" | "CNY"): string {
+  return currency === "CNY" ? "¥" : "$";
+}
+
+export function formatCost(n: number, currency: "USD" | "CNY" = "USD"): string {
+  return currencySymbol(currency) + n.toFixed(2);
+}
+
 export function formatPercent(rate: number): string { return Math.round(rate * 100) + "%"; }
 
 export function nowISO(): string { return new Date().toISOString(); }
