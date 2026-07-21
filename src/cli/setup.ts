@@ -450,7 +450,10 @@ async function finish(c: ReturnType<typeof loadConfig>, lang: Lang): Promise<voi
     console.log("");
     console.log(pc.red(pc.bold("  " + t("setup.claudeMissing", lang))));
     console.log(pc.yellow("  " + t("setup.claudeMissingFix", lang)));
-    console.log(pc.dim("  " + (lang === "zh-CN" ? "（Windows Defender 可能隔离了 claude.exe）" : "(Windows Defender may have quarantined claude.exe)")));
+    const platformHint = process.platform === "win32"
+      ? (lang === "zh-CN" ? "（Windows Defender 可能隔离了 claude.exe）" : "(Windows Defender may have quarantined claude.exe)")
+      : (lang === "zh-CN" ? "（请检查 npm 全局安装路径）" : "(Check your npm global install path)");
+    console.log(pc.dim("  " + platformHint));
   }
 
   console.log("");
